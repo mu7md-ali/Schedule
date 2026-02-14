@@ -44,6 +44,7 @@
         <div class="shortcut-row"><span>Group B</span><span class="shortcut-key">B</span></div>
         <div class="shortcut-row"><span>Designer Mode</span><span class="shortcut-key">D</span></div>
         <div class="shortcut-row"><span>Academic Calendar</span><span class="shortcut-key">C</span></div>
+        <div class="shortcut-row"><span>My Notes</span><span class="shortcut-key">N</span></div>
         <div class="shortcut-row"><span>Toggle Theme</span><span class="shortcut-key">T</span></div>
         <div class="shortcut-row"><span>Close Modal</span><span class="shortcut-key">Esc</span></div>
         <div class="shortcut-row"><span>Show/Hide this</span><span class="shortcut-key">?</span></div>
@@ -68,17 +69,17 @@
             <!-- Header Links + Controls -->
             <div class="flex items-center gap-1 sm:gap-3">
                 <!-- Academy -->
-                <a href="https://sha.edu.eg/" target="_blank" class="header-link">
+                <a href="https://sha.edu.eg/" target="_blank" rel="noopener noreferrer" class="header-link">
                     <i class="fas fa-university"></i>
                     <span>Academy</span>
                 </a>
                 <!-- E-Learning -->
-                <a href="https://elearning.sha.edu.eg/" target="_blank" class="header-link elearning">
+                <a href="https://elearning.sha.edu.eg/" target="_blank" rel="noopener noreferrer" class="header-link elearning">
                     <i class="fas fa-laptop-code"></i>
                     <span>E-Learning</span>
                 </a>
                 <!-- Telegram -->
-                <a href="https://t.me/CS_SHA_4BOT" target="_blank" class="header-link telegram">
+                <a href="https://t.me/CS_SHA_4BOT" target="_blank" rel="noopener noreferrer" class="header-link telegram">
                     <i class="fab fa-telegram"></i>
                     <span>Telegram</span>
                 </a>
@@ -170,20 +171,17 @@
                 <button onclick="showGroupSchedule('B')" id="groupBBtn" class="action-btn group-b text-xs sm:text-sm px-3 sm:px-6 py-2 sm:py-3">
                     <i class="fas fa-users"></i> <span>Group B</span>
                 </button>
-                <button onclick="downloadTable()" id="downloadBtn" class="action-btn download text-xs sm:text-sm px-3 sm:px-6 py-2 sm:py-3">
-                    <i class="fas fa-download"></i> <span>Download</span>
-                </button>
-                <button onclick="downloadGroupPDF()" id="pdfBtn" class="hidden action-btn pdf text-xs sm:text-sm px-3 sm:px-6 py-2 sm:py-3">
-                    <i class="fas fa-file-pdf"></i> <span>Save PDF</span>
-                </button>
-                <button onclick="backToSection()" id="backBtn" class="hidden action-btn back text-xs sm:text-sm px-3 sm:px-6 py-2 sm:py-3">
-                    <i class="fas fa-arrow-left"></i> <span>Back</span>
+                <button onclick="showNotesManager()" class="action-btn notes text-xs sm:text-sm px-3 sm:px-6 py-2 sm:py-3" title="My Notes (N)">
+                    <i class="fas fa-sticky-note"></i> <span class="hidden sm:inline">Notes</span>
                 </button>
                 <button onclick="showAcademicCalendar()" id="calendarBtn" class="action-btn calendar text-xs sm:text-sm px-3 sm:px-6 py-2 sm:py-3" title="Academic Calendar (C)">
                     <i class="fas fa-calendar-alt"></i> <span class="hidden sm:inline">Calendar</span>
                 </button>
                 <button onclick="openDesignerMode()" id="designerBtn" class="action-btn designer text-xs sm:text-sm px-3 sm:px-6 py-2 sm:py-3" title="Designer Mode (D)">
                     <i class="fas fa-palette"></i> <span class="hidden sm:inline">Design</span>
+                </button>
+                <button onclick="backToSection()" id="backBtn" class="hidden action-btn back text-xs sm:text-sm px-3 sm:px-6 py-2 sm:py-3">
+                    <i class="fas fa-arrow-left"></i> <span>Back</span>
                 </button>
             </div>
         </div>
@@ -247,6 +245,13 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Download Button Moved Here -->
+                <div class="table-footer-actions">
+                    <button onclick="downloadTable()" class="action-btn download text-xs sm:text-sm px-4 sm:px-6 py-2 sm:py-3">
+                        <i class="fas fa-download"></i> <span>Save as Image</span>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -271,6 +276,14 @@
                     <tbody id="groupTableBody"></tbody>
                 </table>
             </div>
+            
+            <!-- PDF Download for Group View -->
+            <div class="table-footer-actions" style="margin-top: 20px;">
+                <button onclick="downloadGroupPDF()" class="action-btn pdf text-xs sm:text-sm px-4 sm:px-6 py-2 sm:py-3">
+                    <i class="fas fa-file-pdf"></i> <span>Save as PDF</span>
+                </button>
+            </div>
+
             <div class="signature-area mt-10 sm:mt-16 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-white/10 pt-6 sm:pt-8">
                 <div class="text-center sm:text-left">
                     <span class="text-[8px] sm:text-[9px] font-black tracking-[0.2em] sm:tracking-[0.4em] uppercase block mb-1" style="color: #00d4ff;">Designed &amp; Developed By</span>
@@ -441,7 +454,6 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             await loadData();
-            loadSavedDesigner();
 
             const urlParams = new URLSearchParams(window.location.search);
             const section = urlParams.get('section');
