@@ -466,5 +466,17 @@
             updateThemeIcon(savedTheme);
         });
     </script>
+    <!-- Notes Manager Modal -->
+<div id="notesManagerModal" class="modal hidden">
+    <div class="modal-content notes-modal" style="max-width: 600px;">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-sticky-note"></i> My Notes</h2>
+            <button onclick="closeModal('notesManagerModal')" class="modal-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="notesListContainer">
+            <p style="color: var(--text-secondary); text-align: center;">Loading notes...</p>
+        </div>
+    </div>
+</div>
 </body>
 </html>
