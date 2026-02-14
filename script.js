@@ -3,6 +3,7 @@
 // =============================================
 let periodInfo = {};
 let allSections = {};
+let customSectionData = null; // NEW: separate storage for custom
 
 async function loadData() {
     try {
@@ -10,6 +11,13 @@ async function loadData() {
         const json = await response.json();
         periodInfo = json.periodInfo;
         allSections = json.sections;
+        
+        // Load custom section if exists
+        const savedCustom = localStorage.getItem('customSectionData');
+        if (savedCustom) {
+            customSectionData = JSON.parse(savedCustom);
+            allSections.custom = customSectionData;
+        }
     } catch (err) {
         console.error('Failed to load data.json:', err);
     }
@@ -94,8 +102,6 @@ function changeSection(sectionNum) {
         document.getElementById('skeletonLoader').classList.add('hidden');
         document.getElementById('groupABtn').classList.remove('hidden');
         document.getElementById('groupBBtn').classList.remove('hidden');
-        document.getElementById('downloadBtn').classList.remove('hidden');
-        document.getElementById('pdfBtn').classList.add('hidden');
         document.getElementById('backBtn').classList.add('hidden');
 
         const section = allSections[sectionNum];
@@ -143,7 +149,7 @@ function renderSectionTable(data, displayName) {
             if (cell) {
                 const roomHtml = cell.r.replace(/AI/g, '<span class="ai-highlight">AI</span>');
                 const isLecture = cell.t === 'L';
-                row.innerHTML += `<td><div class="${isLecture ? 'lecture-card' : 'lab-card'}${hasNote ? ' has-note' : ''}" onclick="showDetails('${day}','${p}','${currentSection}')" oncontextmenu="openNoteModal('${day}','${p}','${currentSection}');return false;"><div class="card-subject">${cell.n}</div><div class="card-doctor">${cell.d}</div><div class="room-text">${roomHtml}</div></div></td>`;
+                row.innerHTML += `<td><div class="${isLecture ? 'lecture-card' : 'lab-card'}${hasNote ? ' has-note' : ''}" onclick="showDetails('${day}','${p}','${currentSection}')" oncontextmenu="openNoteModal('${day}','${p}','${currentSection}');return false;"><div class="font-black text-[8px] sm:text-[11px] mb-1 leading-tight text-white text-center">${cell.n}</div><div class="text-[6px] sm:text-[9px] font-bold text-white/60 mb-1 text-center">${cell.d}</div><div class="room-text">${roomHtml}</div></div></td>`;
             } else {
                 row.innerHTML += `<td><div class="free-card" onclick="openNoteModal('${day}','${p}','${currentSection}')">FREE</div></td>`;
             }
@@ -164,8 +170,6 @@ function showGroupSchedule(group) {
     document.getElementById('controlsArea').classList.remove('hidden');
     document.getElementById('groupABtn').classList.add('hidden');
     document.getElementById('groupBBtn').classList.add('hidden');
-    document.getElementById('downloadBtn').classList.add('hidden');
-    document.getElementById('pdfBtn').classList.remove('hidden');
     document.getElementById('backBtn').classList.remove('hidden');
     document.getElementById('sectionSelect').value = "";
     document.getElementById('sectionSelectMain').value = "";
@@ -262,41 +266,45 @@ async function downloadTable() {
     const area = document.getElementById('captureArea');
     showToast('Generating image...', 'info');
     try {
+        // Scroll to top first to avoid cropping
         window.scrollTo(0, 0);
-        await new Promise(r => setTimeout(r, 300));
-
-        const isMobile = window.innerWidth <= 768;
-        // Use scale 1.5 on mobile for smaller file, 2 on desktop for quality
-        const scale = isMobile ? 1.5 : 2;
-        const bgColor = document.documentElement.getAttribute('data-theme') === 'light' ? '#e8f0fe' : '#0a0f1c';
+        await new Promise(r => setTimeout(r, 200));
 
         const canvas = await html2canvas(area, {
-            backgroundColor: bgColor,
-            scale: scale,
+            backgroundColor: document.documentElement.getAttribute('data-theme') === 'light' ? '#f8fafc' : '#0a0f1c',
+            scale: 2,
             useCORS: true,
             allowTaint: true,
             logging: false,
-            scrollX: -window.scrollX,
-            scrollY: -window.scrollY,
-            x: 0,
-            y: 0,
-            width: area.offsetWidth,
-            height: area.offsetHeight,
-            windowWidth: document.documentElement.offsetWidth,
-            windowHeight: document.documentElement.offsetHeight,
-            ignoreElements: (el) => el.id === 'skeletonLoader'
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: area.scrollWidth,
+            width: area.scrollWidth,
+            height: area.scrollHeight
         });
 
-        // Compress: 0.75 quality for smaller file size
-        const quality = isMobile ? 0.75 : 0.85;
-        const filename = `CS_Section${currentSection}.jpg`;
+        const now = new Date();
+        const date = now.toISOString().split('T')[0];
+        const time = now.toTimeString().split(' ')[0].replace(/:/g, '-');
+        const filename = `CS_Section${currentSection}_${date}_${time}.jpg`;
+
+        if ('showSaveFilePicker' in window) {
+            try {
+                const handle = await showSaveFilePicker({ suggestedName: filename, types: [{ description: 'JPEG Image', accept: { 'image/jpeg': ['.jpg'] } }] });
+                const writable = await handle.createWritable();
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+                await writable.write(blob);
+                await writable.close();
+                showToast('Image saved!', 'success');
+                return;
+            } catch (e) { /* fallback */ }
+        }
+
         const link = document.createElement('a');
         link.download = filename;
-        link.href = canvas.toDataURL('image/jpeg', quality);
-        document.body.appendChild(link);
+        link.href = canvas.toDataURL('image/jpeg', 0.9);
         link.click();
-        document.body.removeChild(link);
-        showToast('Image downloaded! 📸', 'success');
+        showToast('Image downloaded!', 'success');
     } catch (err) {
         console.error(err);
         showToast('Download failed', 'error');
@@ -304,28 +312,56 @@ async function downloadTable() {
 }
 
 // =============================================
-// DOWNLOAD PDF
+// DOWNLOAD PDF - FIXED SIZE
 // =============================================
 function downloadGroupPDF() {
     const { jsPDF } = window.jspdf;
     showToast('Generating PDF...', 'info');
     const element = document.getElementById('groupView');
     const clone = element.cloneNode(true);
-    clone.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1400px;';
+    
+    // Remove action buttons from clone
+    clone.querySelectorAll('.action-btn, button').forEach(btn => btn.remove());
+    
+    clone.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1200px;background:#0a0f1c;padding:20px;';
     document.body.appendChild(clone);
-    html2canvas(clone, { backgroundColor: '#0a0f1c', scale: 1.5, useCORS: true, allowTaint: true, width: 1400, windowWidth: 1400 }).then(canvas => {
+    
+    html2canvas(clone, { 
+        backgroundColor: '#0a0f1c', 
+        scale: 1, // REDUCED from 1.5 to 1 for smaller file
+        useCORS: true, 
+        allowTaint: true, 
+        width: 1200, 
+        windowWidth: 1200,
+        logging: false
+    }).then(canvas => {
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('l', 'mm', 'a4');
         const pageWidth = 297, pageHeight = 210;
         const imgHeight = (canvas.height * pageWidth) / canvas.width;
-        let heightLeft = imgHeight, position = 0;
-        pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
-        heightLeft -= pageHeight;
-        while (heightLeft > 0) { position = heightLeft - imgHeight; pdf.addPage(); pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight); heightLeft -= pageHeight; }
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeight);
+        
+        // Only add new page if needed
+        if (imgHeight > pageHeight) {
+            let heightLeft = imgHeight - pageHeight;
+            let position = -pageHeight;
+            while (heightLeft > 0) {
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
+                position -= pageHeight;
+                heightLeft -= pageHeight;
+            }
+        }
+        
         pdf.save(`CS_Schedule_Group_${currentGroup}.pdf`);
         document.body.removeChild(clone);
         showToast('PDF Downloaded!', 'success');
-    }).catch(err => { document.body.removeChild(clone); showToast('PDF Failed', 'error'); console.error(err); });
+    }).catch(err => { 
+        document.body.removeChild(clone); 
+        showToast('PDF Failed', 'error'); 
+        console.error(err); 
+    });
 }
 
 // =============================================
@@ -355,6 +391,87 @@ function saveNote() {
     // Clear saved edit HTML so notes re-render
     localStorage.removeItem(`edit-${currentSection}`);
     if (currentSection === section) renderSectionTable(allSections[currentSection].data, `Section ${currentSection}`);
+}
+
+// =============================================
+// NOTES MANAGER - NEW FEATURE
+// =============================================
+function showNotesManager() {
+    // Create modal if not exists
+    let modal = document.getElementById('notesManagerModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'notesManagerModal';
+        modal.className = 'modal hidden';
+        modal.innerHTML = `
+            <div class="modal-content notes-modal" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h2 class="modal-title"><i class="fas fa-sticky-note"></i> My Notes</h2>
+                    <button onclick="closeModal('notesManagerModal')" class="modal-close"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body" id="notesListContainer">
+                    <p style="color: var(--text-secondary); text-align: center;">Loading notes...</p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    // Load and display notes
+    const container = document.getElementById('notesListContainer');
+    const notes = [];
+    
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('note-')) {
+            const parts = key.split('-');
+            if (parts.length === 4) {
+                notes.push({
+                    key: key,
+                    section: parts[1],
+                    day: parts[2],
+                    period: parts[3],
+                    text: localStorage.getItem(key)
+                });
+            }
+        }
+    }
+    
+    if (notes.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                <i class="fas fa-sticky-note" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
+                <p>No notes yet. Right-click on any subject to add a note!</p>
+            </div>
+        `;
+    } else {
+        container.innerHTML = notes.map(note => `
+            <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; margin-bottom: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                    <span style="font-size: 0.75rem; color: var(--color-lecture); font-weight: 700;">
+                        <i class="fas fa-calendar"></i> ${note.day} ${note.period} | Section ${note.section}
+                    </span>
+                    <button onclick="deleteNote('${note.key}')" style="background: #ef4444; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 0.7rem;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <p style="color: var(--text-primary); font-size: 0.85rem; line-height: 1.5;">${note.text}</p>
+            </div>
+        `).join('');
+    }
+    
+    modal.classList.remove('hidden');
+}
+
+function deleteNote(key) {
+    localStorage.removeItem(key);
+    // Clear saved edit HTML
+    const sectionMatch = key.match(/note-(\d+)-/);
+    if (sectionMatch) {
+        localStorage.removeItem(`edit-${sectionMatch[1]}`);
+    }
+    showNotesManager(); // Refresh
+    showToast('Note deleted', 'info');
 }
 
 // =============================================
@@ -440,81 +557,10 @@ function renderSubjectCards() {
         card.draggable = true;
         card.dataset.code = sub.code;
         card.innerHTML = `<div class="subject-card-name">${sub.name}</div><div class="subject-card-type">${sub.type === 'L' ? 'Lecture' : 'Lab'} — ${sub.doctor}</div>`;
-
-        // Desktop drag
-        card.addEventListener('dragstart', function(e) {
-            draggedSubject = designerSubjects.find(s => s.code === this.dataset.code);
-            this.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'copy';
-        });
+        card.addEventListener('dragstart', function(e) { draggedSubject = designerSubjects.find(s => s.code === this.dataset.code); this.classList.add('dragging'); e.dataTransfer.effectAllowed = 'copy'; });
         card.addEventListener('dragend', function() { this.classList.remove('dragging'); });
-
-        // Mobile touch drag
-        addTouchDrag(card, sub);
-
         container.appendChild(card);
     });
-}
-
-// ---- TOUCH DRAG SUPPORT ----
-let touchGhost = null;
-let touchDragSub = null;
-let lastTouchTarget = null;
-
-function addTouchDrag(card, sub) {
-    card.addEventListener('touchstart', function(e) {
-        touchDragSub = sub;
-        const touch = e.touches[0];
-        // Create ghost
-        touchGhost = card.cloneNode(true);
-        touchGhost.className = card.className + ' touch-dragging';
-        touchGhost.style.left = (touch.clientX - 100) + 'px';
-        touchGhost.style.top = (touch.clientY - 30) + 'px';
-        document.body.appendChild(touchGhost);
-        e.preventDefault();
-    }, { passive: false });
-
-    card.addEventListener('touchmove', function(e) {
-        if (!touchGhost) return;
-        const touch = e.touches[0];
-        touchGhost.style.left = (touch.clientX - 100) + 'px';
-        touchGhost.style.top = (touch.clientY - 30) + 'px';
-
-        // Find drop target
-        touchGhost.style.display = 'none';
-        const el = document.elementFromPoint(touch.clientX, touch.clientY);
-        touchGhost.style.display = '';
-
-        // Remove previous highlight
-        document.querySelectorAll('.drop-slot.touch-over').forEach(s => s.classList.remove('touch-over'));
-
-        const slot = el ? el.closest('.drop-slot') : null;
-        if (slot) { slot.classList.add('touch-over'); lastTouchTarget = slot; }
-        else { lastTouchTarget = null; }
-        e.preventDefault();
-    }, { passive: false });
-
-    card.addEventListener('touchend', function(e) {
-        if (touchGhost) { touchGhost.remove(); touchGhost = null; }
-        document.querySelectorAll('.drop-slot.touch-over').forEach(s => s.classList.remove('touch-over'));
-
-        if (lastTouchTarget && touchDragSub) {
-            const d = lastTouchTarget.dataset.day;
-            const p = lastTouchTarget.dataset.period;
-            if (!d || !p) { touchDragSub = null; lastTouchTarget = null; return; }
-            if (designerSchedule[d][p]) { showToast('Slot occupied! Remove first.', 'error'); }
-            else if (isSubjectUsedOnDay(d, touchDragSub.code)) { showToast(`Already placed on ${d}!`, 'error'); }
-            else {
-                designerSchedule[d][p] = touchDragSub;
-                renderDesignerTable();
-                updateValidation();
-                checkConflicts();
-                showToast(`Added to ${d} ${p} ✅`, 'success');
-            }
-        }
-        touchDragSub = null;
-        lastTouchTarget = null;
-    }, { passive: false });
 }
 
 function renderDesignerTable() {
@@ -604,16 +650,31 @@ function confirmSaveDesigner() {
     document.getElementById('designerConfirmModal').classList.remove('hidden');
 }
 
+// =============================================
+// DESIGNER MODE - FIXED SAVE
+// =============================================
 function doSaveDesigner() {
-    const scheduleData = JSON.parse(JSON.stringify(designerSchedule));
-    allSections.custom = { group: 'Custom', data: scheduleData };
-
-    // Persist to localStorage so it survives refresh
-    localStorage.setItem('designer-custom', JSON.stringify(scheduleData));
-
+    // Create proper section object
+    const customData = {
+        group: 'Custom',
+        data: JSON.parse(JSON.stringify(designerSchedule))
+    };
+    
+    // Save to localStorage properly
+    localStorage.setItem('customSectionData', JSON.stringify(customData));
+    customSectionData = customData;
+    
+    // Update allSections
+    allSections.custom = customData;
+    
+    // Add to dropdowns if not exists
     if (!hasCustomSection) {
         ['sectionSelect', 'sectionSelectMain'].forEach(id => {
             const sel = document.getElementById(id);
+            // Remove existing custom option if any
+            const existing = sel.querySelector('option[value="custom"]');
+            if (existing) existing.remove();
+            
             const opt = document.createElement('option');
             opt.value = 'custom';
             opt.textContent = '🎨 My Custom Section';
@@ -624,29 +685,12 @@ function doSaveDesigner() {
 
     closeModal('designerConfirmModal');
     closeModal('designerModal');
-    changeSection('custom');
-    showToast('Custom schedule saved! 🎉', 'success');
-}
-
-// Load saved designer schedule on startup
-function loadSavedDesigner() {
-    const saved = localStorage.getItem('designer-custom');
-    if (!saved) return;
-    try {
-        const scheduleData = JSON.parse(saved);
-        allSections.custom = { group: 'Custom', data: scheduleData };
-        if (!hasCustomSection) {
-            ['sectionSelect', 'sectionSelectMain'].forEach(id => {
-                const sel = document.getElementById(id);
-                if (!sel) return;
-                const opt = document.createElement('option');
-                opt.value = 'custom';
-                opt.textContent = '🎨 My Custom Section';
-                sel.appendChild(opt);
-            });
-            hasCustomSection = true;
-        }
-    } catch(e) { console.error('Failed to load designer:', e); }
+    
+    // Small delay to ensure UI updates
+    setTimeout(() => {
+        changeSection('custom');
+        showToast('Custom schedule saved! 🎉', 'success');
+    }, 100);
 }
 
 // =============================================
@@ -671,6 +715,7 @@ document.addEventListener('keydown', (e) => {
         case 'd': openDesignerMode(); break;
         case 'c': showAcademicCalendar(); break;
         case 't': toggleTheme(); break;
+        case 'n': showNotesManager(); break; // NEW: N for notes
         case '?': {
             const panel = document.getElementById('shortcutsPanel');
             panel.classList.toggle('visible');
