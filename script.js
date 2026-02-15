@@ -3,7 +3,7 @@
 // =============================================
 let periodInfo = {};
 let allSections = {};
-let customSectionData = null; // NEW: separate storage for custom
+let customSectionData = null;
 
 async function loadData() {
     try {
@@ -244,7 +244,6 @@ function disableEditing(save) {
     isEditing = false;
     const area = isGroupView ? document.getElementById('groupView') : document.getElementById('captureArea');
     if (save) {
-        // Save edited HTML to localStorage
         if (!isGroupView) {
             localStorage.setItem(`edit-${currentSection}`, area.innerHTML);
         }
@@ -260,19 +259,23 @@ function disableEditing(save) {
 }
 
 // =============================================
-// DOWNLOAD IMAGE (fixed cropping)
+// DOWNLOAD IMAGE - FIXED FOR MOBILE
 // =============================================
 async function downloadTable() {
     const area = document.getElementById('captureArea');
     showToast('Generating image...', 'info');
+    
     try {
-        // Scroll to top first to avoid cropping
-        window.scrollTo(0, 0);
-        await new Promise(r => setTimeout(r, 200));
-
+        // Wait for fonts to load
+        await document.fonts.ready;
+        
+        // Force styles for capture
+        const originalTransform = area.style.transform;
+        area.style.transform = 'none';
+        
         const canvas = await html2canvas(area, {
             backgroundColor: document.documentElement.getAttribute('data-theme') === 'light' ? '#f8fafc' : '#0a0f1c',
-            scale: 2,
+            scale: window.devicePixelRatio > 1 ? 2 : 2,
             useCORS: true,
             allowTaint: true,
             logging: false,
@@ -280,34 +283,42 @@ async function downloadTable() {
             scrollY: 0,
             windowWidth: area.scrollWidth,
             width: area.scrollWidth,
-            height: area.scrollHeight
+            height: area.scrollHeight,
+            onclone: function(clonedDoc) {
+                // Ensure cloned element has proper styles
+                const clonedArea = clonedDoc.getElementById('captureArea');
+                if (clonedArea) {
+                    clonedArea.style.transform = 'none';
+                    clonedArea.style.overflow = 'visible';
+                }
+            }
         });
+
+        area.style.transform = originalTransform;
 
         const now = new Date();
         const date = now.toISOString().split('T')[0];
         const time = now.toTimeString().split(' ')[0].replace(/:/g, '-');
         const filename = `CS_Section${currentSection}_${date}_${time}.jpg`;
 
-        if ('showSaveFilePicker' in window) {
-            try {
-                const handle = await showSaveFilePicker({ suggestedName: filename, types: [{ description: 'JPEG Image', accept: { 'image/jpeg': ['.jpg'] } }] });
-                const writable = await handle.createWritable();
-                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
-                await writable.write(blob);
-                await writable.close();
-                showToast('Image saved!', 'success');
-                return;
-            } catch (e) { /* fallback */ }
-        }
-
+        // For mobile: use direct download
         const link = document.createElement('a');
         link.download = filename;
         link.href = canvas.toDataURL('image/jpeg', 0.9);
-        link.click();
+        
+        // Trigger download
+        if (document.createEvent) {
+            const event = document.createEvent('MouseEvents');
+            event.initEvent('click', true, true);
+            link.dispatchEvent(event);
+        } else {
+            link.click();
+        }
+        
         showToast('Image downloaded!', 'success');
     } catch (err) {
         console.error(err);
-        showToast('Download failed', 'error');
+        showToast('Download failed: ' + err.message, 'error');
     }
 }
 
@@ -328,7 +339,7 @@ function downloadGroupPDF() {
     
     html2canvas(clone, { 
         backgroundColor: '#0a0f1c', 
-        scale: 1, // REDUCED from 1.5 to 1 for smaller file
+        scale: 1,
         useCORS: true, 
         allowTaint: true, 
         width: 1200, 
@@ -342,7 +353,6 @@ function downloadGroupPDF() {
         
         pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeight);
         
-        // Only add new page if needed
         if (imgHeight > pageHeight) {
             let heightLeft = imgHeight - pageHeight;
             let position = -pageHeight;
@@ -367,8 +377,14 @@ function downloadGroupPDF() {
 // =============================================
 // MODALS
 // =============================================
-function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-function showAcademicCalendar() { document.getElementById('calendarModal').classList.remove('hidden'); }
+function closeModal(id) { 
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.add('hidden'); 
+}
+function showAcademicCalendar() { 
+    const modal = document.getElementById('calendarModal');
+    if (modal) modal.classList.remove('hidden'); 
+}
 
 // =============================================
 // NOTES
@@ -376,28 +392,35 @@ function showAcademicCalendar() { document.getElementById('calendarModal').class
 function openNoteModal(day, period, section) {
     currentNoteSlot = { day, period, section };
     const noteKey = `note-${section}-${day}-${period}`;
-    document.getElementById('noteText').value = localStorage.getItem(noteKey) || '';
-    document.getElementById('notesModal').classList.remove('hidden');
+    const textarea = document.getElementById('noteText');
+    if (textarea) textarea.value = localStorage.getItem(noteKey) || '';
+    const modal = document.getElementById('notesModal');
+    if (modal) modal.classList.remove('hidden');
 }
 
 function saveNote() {
     if (!currentNoteSlot) return;
     const { section, day, period } = currentNoteSlot;
     const noteKey = `note-${section}-${day}-${period}`;
-    const text = document.getElementById('noteText').value;
-    if (text.trim()) { localStorage.setItem(noteKey, text); showToast('Note saved!', 'success'); }
-    else { localStorage.removeItem(noteKey); showToast('Note removed', 'info'); }
+    const textarea = document.getElementById('noteText');
+    const text = textarea ? textarea.value : '';
+    if (text.trim()) { 
+        localStorage.setItem(noteKey, text); 
+        showToast('Note saved!', 'success'); 
+    }
+    else { 
+        localStorage.removeItem(noteKey); 
+        showToast('Note removed', 'info'); 
+    }
     closeModal('notesModal');
-    // Clear saved edit HTML so notes re-render
     localStorage.removeItem(`edit-${currentSection}`);
     if (currentSection === section) renderSectionTable(allSections[currentSection].data, `Section ${currentSection}`);
 }
 
 // =============================================
-// NOTES MANAGER - NEW FEATURE
+// NOTES MANAGER
 // =============================================
 function showNotesManager() {
-    // Create modal if not exists
     let modal = document.getElementById('notesManagerModal');
     if (!modal) {
         modal = document.createElement('div');
@@ -417,7 +440,6 @@ function showNotesManager() {
         document.body.appendChild(modal);
     }
     
-    // Load and display notes
     const container = document.getElementById('notesListContainer');
     const notes = [];
     
@@ -465,19 +487,19 @@ function showNotesManager() {
 
 function deleteNote(key) {
     localStorage.removeItem(key);
-    // Clear saved edit HTML
     const sectionMatch = key.match(/note-(\d+)-/);
     if (sectionMatch) {
         localStorage.removeItem(`edit-${sectionMatch[1]}`);
     }
-    showNotesManager(); // Refresh
+    showNotesManager();
     showToast('Note deleted', 'info');
 }
 
 // =============================================
-// DESIGNER MODE
+// DESIGNER MODE - WITH TOUCH SUPPORT
 // =============================================
 let draggedSubject = null;
+let selectedSubjectForMobile = null;
 let designerSchedule = {};
 
 const designerSubjects = [
@@ -494,15 +516,20 @@ const designerSubjects = [
 ];
 
 function openDesignerMode() {
-    document.getElementById('designerModal').classList.remove('hidden');
+    const modal = document.getElementById('designerModal');
+    if (modal) modal.classList.remove('hidden');
     initDesigner();
 }
 
 function initDesigner() {
     designerSchedule = {};
+    selectedSubjectForMobile = null;
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
     const periods = ["1-2", "3-4", "5-6", "7-8"];
-    days.forEach(day => { designerSchedule[day] = {}; periods.forEach(p => { designerSchedule[day][p] = null; }); });
+    days.forEach(day => { 
+        designerSchedule[day] = {}; 
+        periods.forEach(p => { designerSchedule[day][p] = null; }); 
+    });
     renderSubjectCards();
     renderDesignerTable();
 }
@@ -510,7 +537,12 @@ function initDesigner() {
 function countSubjects() {
     let lectures = 0, labs = 0;
     Object.values(designerSchedule).forEach(day => {
-        Object.values(day).forEach(sub => { if (sub) { if (sub.type === 'L') lectures++; else labs++; } });
+        Object.values(day).forEach(sub => { 
+            if (sub) { 
+                if (sub.type === 'L') lectures++; 
+                else labs++; 
+            } 
+        });
     });
     return { lectures, labs };
 }
@@ -524,13 +556,21 @@ function checkConflicts() {
     Object.entries(designerSchedule).forEach(([day, slots]) => {
         const used = new Set();
         Object.values(slots).forEach(sub => {
-            if (sub) { if (used.has(sub.code)) conflicts.push(`${sub.name} appears twice on ${day}`); used.add(sub.code); }
+            if (sub) { 
+                if (used.has(sub.code)) conflicts.push(`${sub.name} appears twice on ${day}`); 
+                used.add(sub.code); 
+            }
         });
     });
     const warn = document.getElementById('conflictWarning');
     const txt = document.getElementById('conflictText');
-    if (conflicts.length > 0) { warn.classList.remove('hidden'); txt.innerText = conflicts.join(' | '); }
-    else { warn.classList.add('hidden'); }
+    if (conflicts.length > 0) { 
+        if (warn) warn.classList.remove('hidden'); 
+        if (txt) txt.innerText = conflicts.join(' | '); 
+    }
+    else { 
+        if (warn) warn.classList.add('hidden'); 
+    }
     return conflicts.length === 0;
 }
 
@@ -542,7 +582,7 @@ function updateValidation() {
         div = document.createElement('div');
         div.id = 'designerValidation';
         const body = document.querySelector('#designerModal .modal-body');
-        body.insertBefore(div, body.children[3]);
+        if (body) body.insertBefore(div, body.children[3]);
     }
     div.className = isValid ? 'designer-validation valid' : 'designer-validation';
     div.innerHTML = `<i class="fas fa-${isValid ? 'check-circle' : 'info-circle'}"></i> Lectures: ${lectures}/6 &nbsp;|&nbsp; Labs: ${labs}/4 ${isValid ? '— Ready to save! ✅' : ''}`;
@@ -550,69 +590,145 @@ function updateValidation() {
 
 function renderSubjectCards() {
     const container = document.getElementById('subjectCards');
+    if (!container) return;
     container.innerHTML = '';
+    const isMobile = window.innerWidth <= 768 || 'ontouchstart' in window;
+    
     designerSubjects.forEach(sub => {
         const card = document.createElement('div');
         card.className = `subject-card ${sub.type === 'L' ? 'lecture' : 'lab'}`;
-        card.draggable = true;
+        card.draggable = !isMobile; // Disable drag on mobile
         card.dataset.code = sub.code;
         card.innerHTML = `<div class="subject-card-name">${sub.name}</div><div class="subject-card-type">${sub.type === 'L' ? 'Lecture' : 'Lab'} — ${sub.doctor}</div>`;
-        card.addEventListener('dragstart', function(e) { draggedSubject = designerSubjects.find(s => s.code === this.dataset.code); this.classList.add('dragging'); e.dataTransfer.effectAllowed = 'copy'; });
-        card.addEventListener('dragend', function() { this.classList.remove('dragging'); });
+        
+        // Desktop: Drag events
+        if (!isMobile) {
+            card.addEventListener('dragstart', function(e) { 
+                draggedSubject = designerSubjects.find(s => s.code === this.dataset.code); 
+                this.classList.add('dragging'); 
+                e.dataTransfer.effectAllowed = 'copy'; 
+            });
+            card.addEventListener('dragend', function() { 
+                this.classList.remove('dragging'); 
+            });
+        } else {
+            // Mobile: Tap to select
+            card.addEventListener('click', function() {
+                // Deselect others
+                document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
+                
+                if (selectedSubjectForMobile === sub) {
+                    selectedSubjectForMobile = null;
+                    this.classList.remove('selected');
+                    showToast('Subject deselected', 'info');
+                } else {
+                    selectedSubjectForMobile = sub;
+                    this.classList.add('selected');
+                    showToast(`Selected: ${sub.name} - Tap a slot to place`, 'success');
+                }
+            });
+        }
+        
         container.appendChild(card);
     });
 }
 
 function renderDesignerTable() {
     const tbody = document.getElementById('designerTableBody');
+    if (!tbody) return;
     tbody.innerHTML = '';
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
     const periods = ["1-2", "3-4", "5-6", "7-8"];
+    const isMobile = window.innerWidth <= 768 || 'ontouchstart' in window;
+    
     days.forEach(day => {
         const row = document.createElement('tr');
         const dayTd = document.createElement('td');
         dayTd.textContent = day.substring(0, 3);
         row.appendChild(dayTd);
+        
         periods.forEach((period, idx) => {
             if (idx === 2) {
                 const brk = document.createElement('td');
                 brk.innerHTML = '<div class="break-cell" style="min-height:45px;"><span style="font-size:0.7rem;">☕</span></div>';
                 row.appendChild(brk);
             }
+            
             const td = document.createElement('td');
             const slot = document.createElement('div');
             slot.className = 'drop-slot';
             slot.dataset.day = day;
             slot.dataset.period = period;
+            
             const sub = designerSchedule[day][period];
             if (sub) {
                 slot.classList.add('occupied', sub.type === 'L' ? 'lecture' : 'lab');
-                slot.innerHTML = `<div class="drop-slot-content"><div class="drop-slot-subject">${sub.name}</div><span class="drop-slot-remove" onclick="removeFromSlot('${day}','${period}')"><i class="fas fa-times"></i> Remove</span></div>`;
+                slot.innerHTML = `<div class="drop-slot-content"><div class="drop-slot-subject">${sub.name}</div><span class="drop-slot-remove" onclick="event.stopPropagation(); removeFromSlot('${day}','${period}')"><i class="fas fa-times"></i> Remove</span></div>`;
             } else {
                 slot.innerHTML = '<span class="drop-slot-placeholder">Drop here</span>';
             }
-            slot.addEventListener('dragover', function(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; this.classList.add('drag-over'); });
-            slot.addEventListener('dragleave', function() { this.classList.remove('drag-over'); });
-            slot.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.classList.remove('drag-over');
-                if (!draggedSubject) return;
-                const d = this.dataset.day, p = this.dataset.period;
-                if (designerSchedule[d][p]) { showToast('Slot occupied! Remove first.', 'error'); return; }
-                if (isSubjectUsedOnDay(d, draggedSubject.code)) { showToast(`${draggedSubject.name} already on ${d}!`, 'error'); return; }
-                designerSchedule[d][p] = draggedSubject;
-                renderDesignerTable();
-                updateValidation();
-                checkConflicts();
-                showToast(`Added to ${d} ${p}`, 'success');
-            });
+            
+            // Desktop: Drag and drop
+            if (!isMobile) {
+                slot.addEventListener('dragover', function(e) { 
+                    e.preventDefault(); 
+                    e.dataTransfer.dropEffect = 'copy'; 
+                    this.classList.add('drag-over'); 
+                });
+                slot.addEventListener('dragleave', function() { 
+                    this.classList.remove('drag-over'); 
+                });
+                slot.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('drag-over');
+                    handleDrop(this.dataset.day, this.dataset.period);
+                });
+            } else {
+                // Mobile: Tap to place
+                slot.addEventListener('click', function() {
+                    if (selectedSubjectForMobile) {
+                        handleDrop(this.dataset.day, this.dataset.period);
+                    } else {
+                        showToast('Select a subject first!', 'error');
+                    }
+                });
+            }
+            
             td.appendChild(slot);
             row.appendChild(td);
         });
         tbody.appendChild(row);
     });
+    
     updateValidation();
     checkConflicts();
+}
+
+function handleDrop(day, period) {
+    const subjectToPlace = draggedSubject || selectedSubjectForMobile;
+    if (!subjectToPlace) return;
+    
+    if (designerSchedule[day][period]) { 
+        showToast('Slot occupied! Remove first.', 'error'); 
+        return; 
+    }
+    if (isSubjectUsedOnDay(day, subjectToPlace.code)) { 
+        showToast(`${subjectToPlace.name} already on ${day}!`, 'error'); 
+        return; 
+    }
+    
+    designerSchedule[day][period] = subjectToPlace;
+    
+    // Clear selection after place on mobile
+    if (selectedSubjectForMobile) {
+        selectedSubjectForMobile = null;
+        document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
+    }
+    
+    renderDesignerTable();
+    updateValidation();
+    checkConflicts();
+    showToast(`Added to ${day} ${period}`, 'success');
 }
 
 function removeFromSlot(day, period) {
@@ -627,17 +743,23 @@ function clearDesignerSchedule() {
     Object.keys(designerSchedule).forEach(day => {
         Object.keys(designerSchedule[day]).forEach(p => { designerSchedule[day][p] = null; });
     });
+    selectedSubjectForMobile = null;
+    document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
     renderDesignerTable();
     showToast('Schedule cleared', 'info');
 }
 
-// Confirm before saving
 function confirmSaveDesigner() {
     const { lectures, labs } = countSubjects();
-    if (lectures !== 6 || labs !== 4) { showToast(`Need exactly 6 lectures & 4 labs. Current: ${lectures}L / ${labs}Lab`, 'error'); return; }
-    if (!checkConflicts()) { showToast('Resolve conflicts first!', 'error'); return; }
+    if (lectures !== 6 || labs !== 4) { 
+        showToast(`Need exactly 6 lectures & 4 labs. Current: ${lectures}L / ${labs}Lab`, 'error'); 
+        return; 
+    }
+    if (!checkConflicts()) { 
+        showToast('Resolve conflicts first!', 'error'); 
+        return; 
+    }
 
-    // Build summary
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
     const periods = ["1-2", "3-4", "5-6", "7-8"];
     let summary = '';
@@ -646,32 +768,27 @@ function confirmSaveDesigner() {
         if (slots.length) summary += `<strong style="color:var(--color-lecture)">${day}:</strong> ${slots.map(s => s.name).join(', ')}<br>`;
     });
 
-    document.getElementById('confirmSummary').innerHTML = summary || 'Empty schedule';
-    document.getElementById('designerConfirmModal').classList.remove('hidden');
+    const confirmSummary = document.getElementById('confirmSummary');
+    if (confirmSummary) confirmSummary.innerHTML = summary || 'Empty schedule';
+    
+    const modal = document.getElementById('designerConfirmModal');
+    if (modal) modal.classList.remove('hidden');
 }
 
-// =============================================
-// DESIGNER MODE - FIXED SAVE
-// =============================================
 function doSaveDesigner() {
-    // Create proper section object
     const customData = {
         group: 'Custom',
         data: JSON.parse(JSON.stringify(designerSchedule))
     };
     
-    // Save to localStorage properly
     localStorage.setItem('customSectionData', JSON.stringify(customData));
     customSectionData = customData;
-    
-    // Update allSections
     allSections.custom = customData;
     
-    // Add to dropdowns if not exists
     if (!hasCustomSection) {
         ['sectionSelect', 'sectionSelectMain'].forEach(id => {
             const sel = document.getElementById(id);
-            // Remove existing custom option if any
+            if (!sel) return;
             const existing = sel.querySelector('option[value="custom"]');
             if (existing) existing.remove();
             
@@ -686,7 +803,6 @@ function doSaveDesigner() {
     closeModal('designerConfirmModal');
     closeModal('designerModal');
     
-    // Small delay to ensure UI updates
     setTimeout(() => {
         changeSection('custom');
         showToast('Custom schedule saved! 🎉', 'success');
@@ -703,27 +819,46 @@ document.addEventListener('keydown', (e) => {
 
     const key = e.key;
 
-    // Sections 1–9
-    if (!e.shiftKey && key >= '1' && key <= '9') { changeSection(key); return; }
+    if (!e.shiftKey && key >= '1' && key <= '9') { 
+        changeSection(key); 
+        return; 
+    }
 
-    // Sections 10–16 (Shift+1 to Shift+7)
-    if (e.shiftKey && key >= '1' && key <= '7') { changeSection(String(parseInt(key) + 9)); return; }
+    if (e.shiftKey && key >= '1' && key <= '7') { 
+        changeSection(String(parseInt(key) + 9)); 
+        return; 
+    }
 
     switch (key.toLowerCase()) {
-        case 'a': if (document.getElementById('groupABtn') && !document.getElementById('groupABtn').classList.contains('hidden')) showGroupSchedule('A'); break;
-        case 'b': if (document.getElementById('groupBBtn') && !document.getElementById('groupBBtn').classList.contains('hidden')) showGroupSchedule('B'); break;
-        case 'd': openDesignerMode(); break;
-        case 'c': showAcademicCalendar(); break;
-        case 't': toggleTheme(); break;
-        case 'n': showNotesManager(); break; // NEW: N for notes
+        case 'a': 
+            const groupABtn = document.getElementById('groupABtn');
+            if (groupABtn && !groupABtn.classList.contains('hidden')) showGroupSchedule('A'); 
+            break;
+        case 'b': 
+            const groupBBtn = document.getElementById('groupBBtn');
+            if (groupBBtn && !groupBBtn.classList.contains('hidden')) showGroupSchedule('B'); 
+            break;
+        case 'd': 
+            openDesignerMode(); 
+            break;
+        case 'c': 
+            showAcademicCalendar(); 
+            break;
+        case 't': 
+            toggleTheme(); 
+            break;
+        case 'n': 
+            showNotesManager(); 
+            break;
         case '?': {
             const panel = document.getElementById('shortcutsPanel');
-            panel.classList.toggle('visible');
+            if (panel) panel.classList.toggle('visible');
             break;
         }
         case 'escape': {
             document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-            document.getElementById('shortcutsPanel')?.classList.remove('visible');
+            const panel = document.getElementById('shortcutsPanel');
+            if (panel) panel.classList.remove('visible');
             break;
         }
     }
