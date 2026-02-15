@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>CS Master Schedule | Mohamed Ali</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
@@ -10,6 +10,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CS Schedule">
+    <meta name="mobile-web-app-capable" content="yes">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -54,7 +55,7 @@
         <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex justify-between items-center">
             <!-- Logo + Title -->
             <div class="flex items-center gap-2 sm:gap-4">
-                <a href="https://sha.edu.eg/" target="_blank" class="logo-container" title="Shorouk Academy">
+                <a href="https://sha.edu.eg/" target="_blank" rel="noopener noreferrer" class="logo-container" title="Shorouk Academy">
                     <div class="logo-glow"></div>
                     <i class="fas fa-graduation-cap text-xl sm:text-3xl" style="color: #00d4ff;"></i>
                 </a>
@@ -71,17 +72,17 @@
                 <!-- Academy -->
                 <a href="https://sha.edu.eg/" target="_blank" rel="noopener noreferrer" class="header-link">
                     <i class="fas fa-university"></i>
-                    <span>Academy</span>
+                    <span class="hidden sm:inline">Academy</span>
                 </a>
                 <!-- E-Learning -->
                 <a href="https://elearning.sha.edu.eg/" target="_blank" rel="noopener noreferrer" class="header-link elearning">
                     <i class="fas fa-laptop-code"></i>
-                    <span>E-Learning</span>
+                    <span class="hidden sm:inline">E-Learning</span>
                 </a>
                 <!-- Telegram -->
                 <a href="https://t.me/CS_SHA_4BOT" target="_blank" rel="noopener noreferrer" class="header-link telegram">
                     <i class="fab fa-telegram"></i>
-                    <span>Telegram</span>
+                    <span class="hidden sm:inline">Telegram</span>
                 </a>
 
                 <!-- Theme Toggle -->
@@ -240,8 +241,8 @@
                     <div class="text-center sm:text-right">
                         <p class="text-[8px] sm:text-[10px] font-bold text-white/30 italic mb-2">Shorouk Academy • CS Dept • 2026</p>
                         <div class="flex gap-3 justify-center sm:justify-end">
-                            <a href="https://sha.edu.eg/" target="_blank" class="social-link"><i class="fas fa-globe"></i></a>
-                            <a href="https://t.me/CS_SHA_4BOT" target="_blank" class="social-link telegram"><i class="fab fa-telegram"></i></a>
+                            <a href="https://sha.edu.eg/" target="_blank" rel="noopener noreferrer" class="social-link"><i class="fas fa-globe"></i></a>
+                            <a href="https://t.me/CS_SHA_4BOT" target="_blank" rel="noopener noreferrer" class="social-link telegram"><i class="fab fa-telegram"></i></a>
                         </div>
                     </div>
                 </div>
@@ -362,6 +363,7 @@
 
                 <div class="designer-intro">
                     <p><i class="fas fa-hand-pointer"></i> Drag subjects from the cards below and drop them into the schedule slots!</p>
+                    <p class="mobile-hint" style="display: none; color: #f59e0b; margin-top: 8px;"><i class="fas fa-mobile-alt"></i> Tap a subject, then tap a slot to place it</p>
                 </div>
 
                 <div id="conflictWarning" class="conflict-warning hidden">
@@ -443,6 +445,19 @@
         </div>
     </div>
 
+    <!-- Notes Manager Modal -->
+    <div id="notesManagerModal" class="modal hidden">
+        <div class="modal-content notes-modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-sticky-note"></i> My Notes</h2>
+                <button onclick="closeModal('notesManagerModal')" class="modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="notesListContainer">
+                <p style="color: var(--text-secondary); text-align: center;">Loading notes...</p>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script>
         // Register Service Worker for PWA + Offline
@@ -464,19 +479,13 @@
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeIcon(savedTheme);
+            
+            // Check if mobile and show hint
+            if (window.innerWidth <= 768 || 'ontouchstart' in window) {
+                const hint = document.querySelector('.mobile-hint');
+                if (hint) hint.style.display = 'block';
+            }
         });
     </script>
-    <!-- Notes Manager Modal -->
-<div id="notesManagerModal" class="modal hidden">
-    <div class="modal-content notes-modal" style="max-width: 600px;">
-        <div class="modal-header">
-            <h2 class="modal-title"><i class="fas fa-sticky-note"></i> My Notes</h2>
-            <button onclick="closeModal('notesManagerModal')" class="modal-close"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="modal-body" id="notesListContainer">
-            <p style="color: var(--text-secondary); text-align: center;">Loading notes...</p>
-        </div>
-    </div>
-</div>
 </body>
 </html>
