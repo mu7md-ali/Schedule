@@ -24,21 +24,21 @@
     --header-h:  60px;
 }
 
-/* ==================== LIGHT THEME VARS ==================== */
+/* ==================== LIGHT THEME VARS - RAMADAN SUNRISE ==================== */
 [data-theme="light"] {
-    --bg:       #dbeafe;
-    --bg2:      #eff6ff;
-    --card:     #ffffff;
-    --txt:      #0c1f3d;
-    --txt2:     #1e3a5f;
-    --accent:   #1d4ed8;
-    --purple:   #7e22ce;
-    --green:    #15803d;
-    --orange:   #c2410c;
-    --gold:     #92400e;
-    --border:   rgba(29,78,216,0.18);
-    --shadow-b: 0 4px 20px rgba(29,78,216,0.22);
-    --shadow-p: 0 4px 20px rgba(126,34,206,0.18);
+    --bg:       #fff8e7;
+    --bg2:      #fff3d9;
+    --card:     rgba(255,255,255,0.95);
+    --txt:      #4a2c0f;
+    --txt2:     #6b4423;
+    --accent:   #d4af37;
+    --purple:   #9370db;
+    --green:    #2d8659;
+    --orange:   #e67e22;
+    --gold:     #d4af37;
+    --border:   rgba(212,175,55,0.25);
+    --shadow-b: 0 4px 20px rgba(212,175,55,0.25);
+    --shadow-p: 0 4px 20px rgba(147,112,219,0.25);
 }
 
 /* ==================== RESET ==================== */
@@ -146,17 +146,25 @@ body {
 }
 
 [data-theme="light"] .binary-background {
-    background: radial-gradient(ellipse at top, rgba(232,213,245,0.3) 0%, rgba(212,230,247,0.2) 50%, rgba(184,220,232,0.1) 100%);
+    background: radial-gradient(ellipse at top, 
+        rgba(255,230,180,0.4) 0%, 
+        rgba(255,245,220,0.3) 50%, 
+        rgba(255,250,240,0.2) 100%);
 }
 
 [data-theme="light"] .star {
-    background: #9370db;
-    box-shadow: 0 0 3px #9370db;
+    background: #d4af37;
+    box-shadow: 0 0 4px #d4af37, 0 0 8px rgba(212,175,55,0.3);
 }
 
 [data-theme="light"] .crescent {
-    box-shadow: inset -15px 0 0 0 #9370db;
-    filter: drop-shadow(0 0 15px rgba(147, 112, 219, 0.4));
+    box-shadow: inset -15px 0 0 0 #d4af37;
+    filter: drop-shadow(0 0 20px rgba(212,175,55,0.5));
+}
+
+[data-theme="light"] .lantern-body {
+    background: linear-gradient(135deg, #e6b800 0%, #c29d00 100%);
+    box-shadow: 0 0 25px rgba(230,184,0,0.6);
 }
 
 .binary-column { display: none; }

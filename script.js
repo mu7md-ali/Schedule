@@ -390,11 +390,14 @@ function printTable() {
         return;
     }
     
-    // Just use browser print
-    const printContent = original.innerHTML;
-    const theme = document.documentElement.getAttribute('data-theme');
-    const bgColor = theme === 'light' ? '#dbeafe' : '#0a051f';
+    // Get current theme - default to dark if not set
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const bgColor = theme === 'light' ? '#fff8e7' : '#0a051f';
     
+    console.log('📋 Current theme:', theme);
+    console.log('🎨 Background color:', bgColor);
+    
+    const printContent = original.innerHTML;
     const printWindow = window.open('', '_blank', 'width=1200,height=800');
     printWindow.document.write(`
 <!DOCTYPE html>
@@ -420,17 +423,17 @@ function printTable() {
             --border: rgba(255,215,0,0.15);
         }` : `
         :root, [data-theme="light"] {
-            --bg: #dbeafe;
-            --bg2: #eff6ff;
-            --card: #ffffff;
-            --txt: #0c1f3d;
-            --txt2: #1e3a5f;
-            --accent: #1d4ed8;
-            --purple: #7e22ce;
-            --green: #15803d;
-            --orange: #c2410c;
-            --gold: #92400e;
-            --border: rgba(29,78,216,0.18);
+            --bg: #fff8e7;
+            --bg2: #fff3d9;
+            --card: rgba(255,255,255,0.95);
+            --txt: #4a2c0f;
+            --txt2: #6b4423;
+            --accent: #d4af37;
+            --purple: #9370db;
+            --green: #2d8659;
+            --orange: #e67e22;
+            --gold: #d4af37;
+            --border: rgba(212,175,55,0.25);
         }`}
     </style>
     <link href="style.css" rel="stylesheet">
@@ -483,10 +486,14 @@ function printGroupTable() {
         return;
     }
     
-    const printContent = original.innerHTML;
-    const theme = document.documentElement.getAttribute('data-theme');
-    const bgColor = theme === 'light' ? '#dbeafe' : '#0a051f';
+    // Get current theme - default to dark if not set
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const bgColor = theme === 'light' ? '#fff8e7' : '#0a051f';
     
+    console.log('📋 Current theme:', theme);
+    console.log('🎨 Background color:', bgColor);
+    
+    const printContent = original.innerHTML;
     const printWindow = window.open('', '_blank', 'width=1200,height=800');
     printWindow.document.write(`
 <!DOCTYPE html>
@@ -512,17 +519,17 @@ function printGroupTable() {
             --border: rgba(255,215,0,0.15);
         }` : `
         :root, [data-theme="light"] {
-            --bg: #dbeafe;
-            --bg2: #eff6ff;
-            --card: #ffffff;
-            --txt: #0c1f3d;
-            --txt2: #1e3a5f;
-            --accent: #1d4ed8;
-            --purple: #7e22ce;
-            --green: #15803d;
-            --orange: #c2410c;
-            --gold: #92400e;
-            --border: rgba(29,78,216,0.18);
+            --bg: #fff8e7;
+            --bg2: #fff3d9;
+            --card: rgba(255,255,255,0.95);
+            --txt: #4a2c0f;
+            --txt2: #6b4423;
+            --accent: #d4af37;
+            --purple: #9370db;
+            --green: #2d8659;
+            --orange: #e67e22;
+            --gold: #d4af37;
+            --border: rgba(212,175,55,0.25);
         }`}
     </style>
     <link href="style.css" rel="stylesheet">
@@ -562,7 +569,7 @@ async function downloadTable() {
     try {
         const original = document.getElementById('sectionView');
         const theme = document.documentElement.getAttribute('data-theme');
-        const bgColor = theme === 'light' ? '#dbeafe' : '#0a051f';
+        const bgColor = theme === 'light' ? '#fff8e7' : '#0a051f';
         
         // Create FIXED WIDTH clone (no responsive, no overflow)
         const clone = original.cloneNode(true);
@@ -660,7 +667,7 @@ function downloadGroupPDF() {
 
     const original = document.getElementById('groupView');
     const theme = document.documentElement.getAttribute('data-theme');
-    const bgColor = theme === 'light' ? '#dbeafe' : '#0a051f';
+    const bgColor = theme === 'light' ? '#fff8e7' : '#0a051f';
 
     // Create fixed width clone
     const clone = original.cloneNode(true);
