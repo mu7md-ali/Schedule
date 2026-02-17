@@ -1,31 +1,93 @@
 {
   "periodInfo": {
-    "1-2": { "time": "9:15-10:45", "duration": "90 min" },
-    "3-4": { "time": "10:55-12:25", "duration": "90 min" },
-    "5-6": { "time": "12:45-2:10", "duration": "85 min" },
-    "7-8": { "time": "2:20-3:45", "duration": "85 min" }
+    "1-2": {
+      "time": "9:15-10:45",
+      "duration": "90 min"
+    },
+    "3-4": {
+      "time": "10:55-12:25",
+      "duration": "90 min"
+    },
+    "5-6": {
+      "time": "12:45-2:10",
+      "duration": "85 min"
+    },
+    "7-8": {
+      "time": "2:20-3:45",
+      "duration": "85 min"
+    }
   },
   "sections": {
     "1": {
       "group": "A",
       "data": {
         "Sunday": {
-          "1-2": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "5-6": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "5-6": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "1-2": {"n":"System Analysis 📊","t":"S","d":"T.A Esraa Ezzat","r":"Lab 103"},
-          "3-4": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"},
-          "7-8": {"n":"Computer Network 🔌","t":"S","d":"T.A Esraa Safwat","r":"Lab 105"}
+          "1-2": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Esraa Ezzat",
+            "r": "Lab 103"
+          },
+          "3-4": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          },
+          "7-8": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Esraa Safwat",
+            "r": "Lab 105"
+          }
         },
         "Tuesday": {
-          "1-2": {"n":"Web Programming 🌐","t":"S","d":"T.A Karen","r":"Lab 103 AI"},
-          "5-6": {"n":"Data Structure 🌳","t":"S","d":"T.A Asmaa Hassan","r":"Lab 105"}
+          "1-2": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Karen",
+            "r": "Lab 103 AI"
+          },
+          "5-6": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Asmaa Hassan",
+            "r": "Lab 105"
+          }
         },
         "Wednesday": {
-          "1-2": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"}
+          "1-2": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          }
         },
         "Thursday": {}
       }
@@ -34,20 +96,70 @@
       "group": "A",
       "data": {
         "Sunday": {
-          "1-2": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "3-4": {"n":"Web Programming 🌐","t":"S","d":"T.A Karen","r":"Lab 105"},
-          "5-6": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"},
-          "7-8": {"n":"Computer Network 🔌","t":"S","d":"T.A Rowyda","r":"Lab 303"}
+          "1-2": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "3-4": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Karen",
+            "r": "Lab 105"
+          },
+          "5-6": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          },
+          "7-8": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Rowyda",
+            "r": "Lab 303"
+          }
         },
         "Monday": {
-          "3-4": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"},
-          "7-8": {"n":"System Analysis 📊","t":"S","d":"T.A Esraa Ezzat","r":"Lab 222 AI"}
+          "3-4": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          },
+          "7-8": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Esraa Ezzat",
+            "r": "Lab 222 AI"
+          }
         },
         "Wednesday": {
-          "1-2": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"},
-          "7-8": {"n":"Data Structure 🌳","t":"S","d":"T.A Nadeen","r":"Lab 104"}
+          "1-2": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          },
+          "7-8": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Nadeen",
+            "r": "Lab 104"
+          }
         },
         "Thursday": {}
       }
@@ -56,20 +168,70 @@
       "group": "A",
       "data": {
         "Sunday": {
-          "1-2": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "5-6": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "5-6": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "1-2": {"n":"Computer Network 🔌","t":"S","d":"T.A Esraa Safwat","r":"Lab 105"},
-          "3-4": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"},
-          "7-8": {"n":"Data Structure 🌳","t":"S","d":"T.A Asmaa Hassan","r":"Lab 101"}
+          "1-2": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Esraa Safwat",
+            "r": "Lab 105"
+          },
+          "3-4": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          },
+          "7-8": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Asmaa Hassan",
+            "r": "Lab 101"
+          }
         },
         "Wednesday": {
-          "1-2": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "3-4": {"n":"Web Programming 🌐","t":"S","d":"T.A Karen","r":"Lab 303"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"},
-          "7-8": {"n":"System Analysis 📊","t":"S","d":"T.A Ethar","r":"Lab 101"}
+          "1-2": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "3-4": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Karen",
+            "r": "Lab 303"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          },
+          "7-8": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Ethar",
+            "r": "Lab 101"
+          }
         },
         "Thursday": {}
       }
@@ -78,22 +240,72 @@
       "group": "A",
       "data": {
         "Sunday": {
-          "1-2": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "5-6": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "5-6": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "3-4": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"}
+          "3-4": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Tuesday": {
-          "1-2": {"n":"Data Structure 🌳","t":"S","d":"T.A Asmaa Hassan","r":"Lab 102"},
-          "3-4": {"n":"System Analysis 📊","t":"S","d":"T.A Ethar","r":"Lab 201 AI"},
-          "5-6": {"n":"Computer Network 🔌","t":"S","d":"T.A Rowyda","r":"Lab 002"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Asmaa Hassan",
+            "r": "Lab 102"
+          },
+          "3-4": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Ethar",
+            "r": "Lab 201 AI"
+          },
+          "5-6": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Rowyda",
+            "r": "Lab 002"
+          }
         },
         "Wednesday": {
-          "1-2": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"},
-          "7-8": {"n":"Web Programming 🌐","t":"S","d":"T.A Asmaa Ghoniem","r":"Lab 103"}
+          "1-2": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          },
+          "7-8": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Asmaa Ghoniem",
+            "r": "Lab 103"
+          }
         },
         "Thursday": {}
       }
@@ -102,22 +314,72 @@
       "group": "A",
       "data": {
         "Sunday": {
-          "1-2": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "5-6": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "5-6": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "1-2": {"n":"Web Programming 🌐","t":"S","d":"T.A Asmaa Ghoniem","r":"Lab 002"},
-          "3-4": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"},
-          "7-8": {"n":"System Analysis 📊","t":"S","d":"T.A Ethar","r":"Lab 205"}
+          "1-2": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Asmaa Ghoniem",
+            "r": "Lab 002"
+          },
+          "3-4": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          },
+          "7-8": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Ethar",
+            "r": "Lab 205"
+          }
         },
         "Tuesday": {
-          "3-4": {"n":"Computer Network 🔌","t":"S","d":"T.A Rowyda","r":"Lab 218 AI"},
-          "7-8": {"n":"Data Structure 🌳","t":"S","d":"T.A Asmaa Hassan","r":"Lab 104"}
+          "3-4": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Rowyda",
+            "r": "Lab 218 AI"
+          },
+          "7-8": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Asmaa Hassan",
+            "r": "Lab 104"
+          }
         },
         "Wednesday": {
-          "1-2": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"}
+          "1-2": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          }
         },
         "Thursday": {}
       }
@@ -126,22 +388,72 @@
       "group": "A",
       "data": {
         "Sunday": {
-          "1-2": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "3-4": {"n":"System Analysis 📊","t":"S","d":"T.A Esraa Ezzat","r":"Lab 218 AI"},
-          "5-6": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "3-4": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Esraa Ezzat",
+            "r": "Lab 218 AI"
+          },
+          "5-6": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "3-4": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"},
-          "7-8": {"n":"Data Structure 🌳","t":"S","d":"T.A Yoser","r":"Lab 104"}
+          "3-4": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          },
+          "7-8": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Yoser",
+            "r": "Lab 104"
+          }
         },
         "Tuesday": {
-          "1-2": {"n":"Web Programming 🌐","t":"S","d":"T.A Asmaa Ghoniem","r":"Lab 203"},
-          "7-8": {"n":"Computer Network 🔌","t":"S","d":"T.A Reham","r":"Lab 303"}
+          "1-2": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Asmaa Ghoniem",
+            "r": "Lab 203"
+          },
+          "7-8": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Reham",
+            "r": "Lab 303"
+          }
         },
         "Wednesday": {
-          "1-2": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"}
+          "1-2": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          }
         },
         "Thursday": {}
       }
@@ -150,22 +462,72 @@
       "group": "A",
       "data": {
         "Sunday": {
-          "1-2": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "5-6": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "5-6": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "3-4": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"},
-          "7-8": {"n":"Web Programming 🌐","t":"S","d":"T.A Asmaa Ghoniem","r":"Lab 203 AI"}
+          "3-4": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          },
+          "7-8": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Asmaa Ghoniem",
+            "r": "Lab 203 AI"
+          }
         },
         "Wednesday": {
-          "1-2": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "3-4": {"n":"Data Structure 🌳","t":"S","d":"T.A Yoser","r":"Lab 201 AI"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"}
+          "1-2": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "3-4": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Yoser",
+            "r": "Lab 201 AI"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          }
         },
         "Thursday": {
-          "1-2": {"n":"System Analysis 📊","t":"S","d":"T.A Layla","r":"Lab 101"},
-          "5-6": {"n":"Computer Network 🔌","t":"S","d":"T.A Nadeem","r":"Lab 004"}
+          "1-2": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Layla",
+            "r": "Lab 101"
+          },
+          "5-6": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Nadeem",
+            "r": "Lab 004"
+          }
         }
       }
     },
@@ -173,22 +535,72 @@
       "group": "A",
       "data": {
         "Sunday": {
-          "1-2": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "3-4": {"n":"Web Programming 🌐","t":"S","d":"T.A Asmaa Ghoniem","r":"Lab 002"},
-          "5-6": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "3-4": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Asmaa Ghoniem",
+            "r": "Lab 002"
+          },
+          "5-6": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "1-2": {"n":"Data Structure 🌳","t":"S","d":"T.A Yoser","r":"Lab 104"},
-          "3-4": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Yoser",
+            "r": "Lab 104"
+          },
+          "3-4": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Wednesday": {
-          "1-2": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"}
+          "1-2": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          }
         },
         "Thursday": {
-          "1-2": {"n":"Computer Network 🔌","t":"S","d":"T.A Nadeen","r":"Lab 218 AI"},
-          "7-8": {"n":"System Analysis 📊","t":"S","d":"T.A Layla","r":"Lab 218 AI"}
+          "1-2": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Nadeen",
+            "r": "Lab 218 AI"
+          },
+          "7-8": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Layla",
+            "r": "Lab 218 AI"
+          }
         }
       }
     },
@@ -196,22 +608,72 @@
       "group": "B",
       "data": {
         "Sunday": {
-          "3-4": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "5-6": {"n":"Web Programming 🌐","t":"S","d":"T.A Asmaa Ghoniem","r":"Lab 201 AI"},
-          "7-8": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"}
+          "3-4": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "5-6": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Asmaa Ghoniem",
+            "r": "Lab 201 AI"
+          },
+          "7-8": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "1-2": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"},
-          "3-4": {"n":"Data Structure 🌳","t":"S","d":"T.A Yoser","r":"Lab 303"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          },
+          "3-4": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Yoser",
+            "r": "Lab 303"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          }
         },
         "Tuesday": {
-          "5-6": {"n":"Computer Network 🔌","t":"S","d":"T.A Reham","r":"Lab 203"},
-          "7-8": {"n":"System Analysis 📊","t":"S","d":"T.A Layla","r":"Lab 201 AI"}
+          "5-6": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Reham",
+            "r": "Lab 203"
+          },
+          "7-8": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Layla",
+            "r": "Lab 201 AI"
+          }
         },
         "Wednesday": {
-          "3-4": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"}
+          "3-4": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Thursday": {}
       }
@@ -220,22 +682,72 @@
       "group": "B",
       "data": {
         "Sunday": {
-          "1-2": {"n":"Web Programming 🌐","t":"S","d":"T.A Asmaa Ghoniem","r":"Lab 105"},
-          "3-4": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "7-8": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Asmaa Ghoniem",
+            "r": "Lab 105"
+          },
+          "3-4": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "7-8": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "1-2": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"},
-          "3-4": {"n":"Computer Network 🔌","t":"S","d":"T.A Nadeen","r":"Lab 002"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          },
+          "3-4": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Nadeen",
+            "r": "Lab 002"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          }
         },
         "Tuesday": {
-          "3-4": {"n":"System Analysis 📊","t":"S","d":"T.A Layla","r":"Lab 101"},
-          "7-8": {"n":"Data Structure 🌳","t":"S","d":"T.A Reham","r":"Lab 102"}
+          "3-4": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Layla",
+            "r": "Lab 101"
+          },
+          "7-8": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Reham",
+            "r": "Lab 102"
+          }
         },
         "Wednesday": {
-          "3-4": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"}
+          "3-4": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Thursday": {}
       }
@@ -244,22 +756,72 @@
       "group": "B",
       "data": {
         "Sunday": {
-          "3-4": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "7-8": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"}
+          "3-4": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "7-8": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "1-2": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"},
-          "7-8": {"n":"Web Programming 🌐","t":"S","d":"T.A Salma Ayman","r":"Lab 303"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          },
+          "7-8": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Salma Ayman",
+            "r": "Lab 303"
+          }
         },
         "Tuesday": {
-          "5-6": {"n":"System Analysis 📊","t":"S","d":"T.A Layla","r":"Lab 104"},
-          "7-8": {"n":"Computer Network 🔌","t":"S","d":"T.A Salma Ayman","r":"Lab 203"}
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Layla",
+            "r": "Lab 104"
+          },
+          "7-8": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Salma Ayman",
+            "r": "Lab 203"
+          }
         },
         "Wednesday": {
-          "1-2": {"n":"Data Structure 🌳","t":"S","d":"T.A Reham","r":"Lab 102"},
-          "3-4": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Reham",
+            "r": "Lab 102"
+          },
+          "3-4": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Thursday": {}
       }
@@ -268,22 +830,72 @@
       "group": "B",
       "data": {
         "Sunday": {
-          "1-2": {"n":"Web Programming 🌐","t":"S","d":"T.A Salma Ayman","r":"Lab 201 AI"},
-          "3-4": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "7-8": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Salma Ayman",
+            "r": "Lab 201 AI"
+          },
+          "3-4": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "7-8": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "1-2": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          }
         },
         "Tuesday": {
-          "1-2": {"n":"Computer Network 🔌","t":"S","d":"T.A Salma Ayman","r":"Lab 101"},
-          "7-8": {"n":"System Analysis 📊","t":"S","d":"T.A Howida","r":"Lab 218 AI"}
+          "1-2": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Salma Ayman",
+            "r": "Lab 101"
+          },
+          "7-8": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Howida",
+            "r": "Lab 218 AI"
+          }
         },
         "Wednesday": {
-          "3-4": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"},
-          "7-8": {"n":"Data Structure 🌳","t":"S","d":"T.A Rehab","r":"Lab 219 AI"}
+          "3-4": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          },
+          "7-8": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Rehab",
+            "r": "Lab 219 AI"
+          }
         },
         "Thursday": {}
       }
@@ -292,23 +904,78 @@
       "group": "B",
       "data": {
         "Sunday": {
-          "3-4": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "7-8": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"}
+          "3-4": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "7-8": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "1-2": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"},
-          "3-4": {"n":"Computer Network 🔌","t":"S","d":"T.A Salma Ayman","r":"Lab 105"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"},
-          "7-8": {"n":"Data Structure 🌳","t":"S","d":"T.A Rehab","r":"Lab 218 AI"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          },
+          "3-4": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Salma Ayman",
+            "r": "Lab 105"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          },
+          "7-8": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Rehab",
+            "r": "Lab 218 AI"
+          }
         },
         "Wednesday": {
-          "3-4": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"},
-          "7-8": {"n":"System Analysis 📊","t":"S","d":"T.A Howida","r":"Lab 222 AI"}
+          "3-4": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          },
+          "7-8": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Howida",
+            "r": "Lab 222 AI"
+          }
         },
         "Thursday": {
-          "1-2": {"n":"Web Programming 🌐","t":"S","d":"T.A Salma Ayman","r":"Lab 105"},
-          "7-8": {"n":"Data Structure 🌳","t":"S","d":"T.A Nadeen","r":"Lab 219 AI"}
+          "1-2": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Salma Ayman",
+            "r": "Lab 105"
+          },
+          "7-8": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Nadeen",
+            "r": "Lab 219 AI"
+          }
         }
       }
     },
@@ -316,22 +983,72 @@
       "group": "B",
       "data": {
         "Sunday": {
-          "3-4": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "5-6": {"n":"Computer Network 🔌","t":"S","d":"T.A Salma Ayman","r":"Lab 203"},
-          "7-8": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"}
+          "3-4": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "5-6": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Salma Ayman",
+            "r": "Lab 203"
+          },
+          "7-8": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "1-2": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          }
         },
         "Wednesday": {
-          "3-4": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"},
-          "7-8": {"n":"System Analysis 📊","t":"S","d":"T.A Howida","r":"Lab 222 AI"}
+          "3-4": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          },
+          "7-8": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Howida",
+            "r": "Lab 222 AI"
+          }
         },
         "Thursday": {
-          "1-2": {"n":"Web Programming 🌐","t":"S","d":"T.A Salma Ayman","r":"Lab 105"},
-          "7-8": {"n":"Data Structure 🌳","t":"S","d":"T.A Nadeen","r":"Lab 219 AI"}
+          "1-2": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Salma Ayman",
+            "r": "Lab 105"
+          },
+          "7-8": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Nadeen",
+            "r": "Lab 219 AI"
+          }
         }
       }
     },
@@ -339,22 +1056,72 @@
       "group": "B",
       "data": {
         "Sunday": {
-          "1-2": {"n":"Data Structure 🌳","t":"S","d":"T.A Nadeen","r":"Lab 303"},
-          "3-4": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "5-6": {"n":"System Analysis 📊","t":"S","d":"T.A Howida","r":"Lab 105"},
-          "7-8": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Nadeen",
+            "r": "Lab 303"
+          },
+          "3-4": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Howida",
+            "r": "Lab 105"
+          },
+          "7-8": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "1-2": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          }
         },
         "Wednesday": {
-          "3-4": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"}
+          "3-4": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Thursday": {
-          "1-2": {"n":"Computer Network 🔌","t":"S","d":"T.A Salma Ayman","r":"Lab 104"},
-          "5-6": {"n":"Web Programming 🌐","t":"S","d":"T.A Salma Ayman","r":"Lab 102"}
+          "1-2": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Salma Ayman",
+            "r": "Lab 104"
+          },
+          "5-6": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Salma Ayman",
+            "r": "Lab 102"
+          }
         }
       }
     },
@@ -362,22 +1129,72 @@
       "group": "B",
       "data": {
         "Sunday": {
-          "3-4": {"n":"Business Administration 💼","t":"L","d":"Dr. Sameh Mohamed","r":"مدرج 1 إعلام"},
-          "7-8": {"n":"Computer Network 🔌","t":"L","d":"Dr. Hesham Abo el-fotoh","r":"مدرج 5 إعلام"}
+          "3-4": {
+            "n": "Business Administration 💼",
+            "t": "L",
+            "d": "Dr. Sameh Mohamed",
+            "r": "مدرج 1 إعلام"
+          },
+          "7-8": {
+            "n": "Computer Network 🔌",
+            "t": "L",
+            "d": "Dr. Hesham Abo el-fotoh",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Monday": {
-          "1-2": {"n":"Data Structure 🌳","t":"L","d":"Dr. Osama Shafik","r":"مدرج 5 إعلام"},
-          "3-4": {"n":"Web Programming 🌐","t":"S","d":"T.A Karen","r":"Lab 201 AI"},
-          "5-6": {"n":"System Analysis 📊","t":"L","d":"Dr. Magdy Elhenawy","r":"مدرج 7 علوم حاسب"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "L",
+            "d": "Dr. Osama Shafik",
+            "r": "مدرج 5 إعلام"
+          },
+          "3-4": {
+            "n": "Web Programming 🌐",
+            "t": "S",
+            "d": "T.A Karen",
+            "r": "Lab 201 AI"
+          },
+          "5-6": {
+            "n": "System Analysis 📊",
+            "t": "L",
+            "d": "Dr. Magdy Elhenawy",
+            "r": "مدرج 7 علوم حاسب"
+          }
         },
         "Wednesday": {
-          "1-2": {"n":"Data Structure 🌳","t":"S","d":"T.A Nadeen","r":"Lab 104"},
-          "3-4": {"n":"Human Rights ⚖️","t":"L","d":"Dr. Ahmed Noaman","r":"مدرج 5 إعلام"},
-          "5-6": {"n":"Web Programming 🌐","t":"L","d":"Dr. Mohamed Mostafa","r":"مدرج 5 إعلام"}
+          "1-2": {
+            "n": "Data Structure 🌳",
+            "t": "S",
+            "d": "T.A Nadeen",
+            "r": "Lab 104"
+          },
+          "3-4": {
+            "n": "Human Rights ⚖️",
+            "t": "L",
+            "d": "Dr. Ahmed Noaman",
+            "r": "مدرج 5 إعلام"
+          },
+          "5-6": {
+            "n": "Web Programming 🌐",
+            "t": "L",
+            "d": "Dr. Mohamed Mostafa",
+            "r": "مدرج 5 إعلام"
+          }
         },
         "Thursday": {
-          "3-4": {"n":"Computer Network 🔌","t":"S","d":"T.A Nadeen","r":"Lab 004"},
-          "7-8": {"n":"System Analysis 📊","t":"S","d":"T.A Howida","r":"Lab 222 AI"}
+          "3-4": {
+            "n": "Computer Network 🔌",
+            "t": "S",
+            "d": "T.A Nadeen",
+            "r": "Lab 004"
+          },
+          "7-8": {
+            "n": "System Analysis 📊",
+            "t": "S",
+            "d": "T.A Howida",
+            "r": "Lab 222 AI"
+          }
         }
       }
     },
@@ -389,6 +1206,41 @@
         "Tuesday": {},
         "Wednesday": {},
         "Thursday": {}
+      }
+    },
+    "17": {
+      "group": "Custom",
+      "data": {
+        "Sunday": {
+          "1-2": null,
+          "3-4": null,
+          "5-6": null,
+          "7-8": null
+        },
+        "Monday": {
+          "1-2": null,
+          "3-4": null,
+          "5-6": null,
+          "7-8": null
+        },
+        "Tuesday": {
+          "1-2": null,
+          "3-4": null,
+          "5-6": null,
+          "7-8": null
+        },
+        "Wednesday": {
+          "1-2": null,
+          "3-4": null,
+          "5-6": null,
+          "7-8": null
+        },
+        "Thursday": {
+          "1-2": null,
+          "3-4": null,
+          "5-6": null,
+          "7-8": null
+        }
       }
     }
   }

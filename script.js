@@ -1,48 +1,43 @@
-// =============================================
-// DATA — loaded from data.json
-// =============================================
+// ============================================
+// DATA
+// ============================================
 let periodInfo = {};
 let allSections = {};
-let customSectionData = null;
 
 async function loadData() {
     try {
-        const response = await fetch('data.json');
-        const json = await response.json();
+        console.log('🔄 Loading data.json...');
+        const res = await fetch('data.json');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
         periodInfo = json.periodInfo;
         allSections = json.sections;
-        
-        // Load custom section if exists
-        const savedCustom = localStorage.getItem('customSectionData');
-        if (savedCustom) {
-            customSectionData = JSON.parse(savedCustom);
-            allSections.custom = customSectionData;
-        }
+        console.log('✅ Data loaded:', Object.keys(allSections).length, 'sections');
     } catch (err) {
-        console.error('Failed to load data.json:', err);
+        console.error('❌ Failed to load data.json:', err);
+        showToast('فشل تحميل البيانات - تأكد من وجود data.json', 'error');
+        // Create dummy data so site doesn't crash
+        allSections = {'1': {data: {}}};
     }
 }
 
-// =============================================
+// ============================================
 // STATE
-// =============================================
+// ============================================
 let currentSection = "1";
-let originalContent = '';
-let isEditing = false;
 let isGroupView = false;
 let currentGroup = null;
-let currentNoteSlot = null;
-let hasCustomSection = false;
 
-// =============================================
+// ============================================
 // THEME
-// =============================================
+// ============================================
 function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
     updateThemeIcon(next);
+    showToast(next === 'dark' ? 'Dark Mode 🌙' : 'Light Mode ☀️', 'info');
 }
 
 function updateThemeIcon(theme) {
@@ -50,166 +45,284 @@ function updateThemeIcon(theme) {
     if (icon) icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
 }
 
-// =============================================
-// BINARY BACKGROUND
-// =============================================
+// ============================================
+// RAMADAN DECORATIONS 🌙✨
+// ============================================
 function initBinaryBackground() {
-    const container = document.getElementById('binary-bg');
-    if (!container) return;
-    container.innerHTML = '';
-    for (let i = 0; i < 30; i++) {
-        const col = document.createElement('div');
-        col.className = 'binary-column';
-        col.style.left = `${(i / 30) * 100}%`;
-        col.style.animationDuration = `${15 + Math.random() * 10}s`;
-        col.style.animationDelay = `${Math.random() * 5}s`;
-        let txt = '';
-        for (let j = 0; j < 40; j++) { txt += (Math.random() > 0.5 ? '1' : '0') + '<br>'; }
-        col.innerHTML = txt;
-        container.appendChild(col);
+    const bg = document.getElementById('binary-bg');
+    if (!bg) return;
+    
+    bg.innerHTML = '';
+    bg.className = 'binary-background';
+    
+    // Create stars container
+    const starsDiv = document.createElement('div');
+    starsDiv.className = 'stars';
+    
+    // Generate 50 random stars
+    for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        starsDiv.appendChild(star);
     }
+    bg.appendChild(starsDiv);
+    
+    // Create crescent moon
+    const crescent = document.createElement('div');
+    crescent.className = 'crescent';
+    crescent.style.right = '10%';
+    crescent.style.top = '15%';
+    bg.appendChild(crescent);
+    
+    // Create lanterns
+    const lanternPositions = [
+        { left: '15%', top: '20%', delay: '0s' },
+        { right: '20%', top: '35%', delay: '1s' },
+        { left: '25%', top: '60%', delay: '2s' },
+        { right: '15%', top: '70%', delay: '1.5s' }
+    ];
+    
+    lanternPositions.forEach(pos => {
+        const lantern = document.createElement('div');
+        lantern.className = 'lantern';
+        lantern.style.animationDelay = pos.delay;
+        if (pos.left) lantern.style.left = pos.left;
+        if (pos.right) lantern.style.right = pos.right;
+        lantern.style.top = pos.top;
+        
+        lantern.innerHTML = `
+            <div class="lantern-rope"></div>
+            <div class="lantern-body">
+                <div class="lantern-light"></div>
+            </div>
+        `;
+        
+        bg.appendChild(lantern);
+    });
 }
 
-// =============================================
+// ============================================
 // TOAST
-// =============================================
-function showToast(message, type = 'info') {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    const icons = { success: '<i class="fas fa-check-circle"></i>', error: '<i class="fas fa-exclamation-circle"></i>', info: '<i class="fas fa-info-circle"></i>' };
-    toast.innerHTML = `${icons[type] || ''} ${message}`;
-    container.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
+// ============================================
+function showToast(msg, type = 'info') {
+    const c = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+    t.innerHTML = `<span>${icons[type]||''}</span><span>${msg}</span>`;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 3200);
 }
 
-// =============================================
+// ============================================
 // SECTION LOADING
-// =============================================
-function changeSection(sectionNum) {
-    if (!sectionNum) return;
-    document.getElementById('skeletonLoader').classList.remove('hidden');
+// ============================================
+function changeSection(num) {
+    console.log('📋 changeSection called with:', num);
+    if (!num) { console.warn('⚠️ No section number provided'); return; }
+    if (!allSections[num]) { 
+        console.error('❌ Section not found:', num); 
+        showToast('هذا القسم غير متوفر', 'error'); 
+        return; 
+    }
+
+    console.log('✅ Changing to section:', num);
+    currentSection = num;
+    isGroupView = false;
+    currentGroup = null;
+
     document.getElementById('noticeBox').classList.add('hidden');
     document.getElementById('controlsArea').classList.remove('hidden');
+    document.getElementById('sectionView').classList.remove('hidden');
+    document.getElementById('groupView').classList.add('hidden');
+    document.getElementById('notesSection').classList.remove('hidden');
 
-    setTimeout(() => {
-        currentSection = sectionNum;
-        isGroupView = false;
-        currentGroup = null;
+    document.getElementById('groupABtn').classList.remove('hidden');
+    document.getElementById('groupBBtn').classList.remove('hidden');
+    // Show print button (it's always visible for sections)
+    const printBtn = document.getElementById('printBtn');
+    if (printBtn) printBtn.classList.remove('hidden');
+    // Hide group print button
+    const printGroupBtn = document.getElementById('printGroupBtn');
+    if (printGroupBtn) printGroupBtn.classList.add('hidden');
+    document.getElementById('backBtn').classList.add('hidden');
 
-        document.getElementById('sectionView').classList.remove('hidden');
-        document.getElementById('groupView').classList.add('hidden');
-        document.getElementById('skeletonLoader').classList.add('hidden');
-        document.getElementById('groupABtn').classList.remove('hidden');
-        document.getElementById('groupBBtn').classList.remove('hidden');
-        document.getElementById('backBtn').classList.add('hidden');
+    // Edit button — only for section 17
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveEditBtn');
+    const cancelBtn = document.getElementById('cancelEditBtn');
+    if (num === '17') {
+        editBtn?.classList.remove('hidden');
+    } else {
+        editBtn?.classList.add('hidden');
+        saveBtn?.classList.add('hidden');
+        cancelBtn?.classList.add('hidden');
+        // cancel any active editing
+        const area = document.getElementById('captureArea');
+        if (area) area.contentEditable = 'false';
+    }
 
-        const section = allSections[sectionNum];
-        const displayName = sectionNum === 'custom' ? 'My Custom Section' : `Section ${sectionNum}`;
-        renderSectionTable(section.data, displayName);
+    // sync selects
+    ['sectionSelect','sectionSelectMain'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = num;
+    });
 
-        document.getElementById('sectionSelect').value = sectionNum;
-        document.getElementById('sectionSelectMain').value = sectionNum;
-
-        showToast(`${displayName} Loaded`, 'success');
-    }, 400);
+    const sec = allSections[num];
+    const displayName = num === '17' ? '✏️ Custom Schedule' : `Section ${num}`;
+    renderSectionTable(sec.data, displayName);
+    showToast(`${displayName} Loaded ✅`, 'success');
 }
 
-// =============================================
+// ============================================
 // RENDER SECTION TABLE
-// =============================================
+// ============================================
 function renderSectionTable(data, displayName) {
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
-    const periods = ["1-2", "3-4", "5-6", "7-8"];
+    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday"];
+    const periods = ["1-2","3-4","5-6","7-8"];
     const body = document.getElementById('tableBody');
     body.innerHTML = '';
     document.getElementById('tableTitle').innerText = displayName;
 
-    // Load saved edited HTML if exists
-    const savedHTML = localStorage.getItem(`edit-${currentSection}`);
-    if (savedHTML && !isGroupView) {
-        document.getElementById('captureArea').innerHTML = savedHTML;
-        return;
+    // Section 17: load saved HTML if exists
+    if (currentSection === '17') {
+        const saved = localStorage.getItem('custom17-html');
+        if (saved) {
+            document.getElementById('captureArea').innerHTML = saved;
+            return;
+        }
     }
 
-    days.forEach((day, index) => {
+    days.forEach((day, di) => {
         const row = document.createElement('tr');
         row.className = 'day-row';
-        row.style.animationDelay = `${index * 0.05}s`;
-        row.innerHTML = `<td class="font-black text-white/50 text-[9px] sm:text-[11px] pr-1 sm:pr-4 align-middle uppercase tracking-wider whitespace-nowrap">${day}</td>`;
+        row.style.animationDelay = `${di * 0.06}s`;
 
-        periods.forEach((p, pIndex) => {
-            if (pIndex === 2) {
-                row.innerHTML += `<td><div class="break-cell"><div class="break-line"></div><span class="break-icon">☕</span><span class="break-text">BREAK</span><div class="break-line"></div></div></td>`;
+        // Day label
+        const dayTd = document.createElement('td');
+        dayTd.className = 'day-lbl';
+        dayTd.textContent = day;
+        row.appendChild(dayTd);
+
+        periods.forEach((p, pi) => {
+            // Insert break after period index 1 (before 5-6)
+            if (pi === 2) {
+                const brk = document.createElement('td');
+                brk.innerHTML = `<div class="brk-cell">
+                    <div class="brk-line"></div>
+                    <span class="brk-icon">☕</span>
+                    <span class="brk-lbl">BREAK</span>
+                    <div class="brk-line"></div>
+                </div>`;
+                row.appendChild(brk);
             }
-            const cell = data[day] ? data[day][p] : null;
-            const noteKey = `note-${currentSection}-${day}-${p}`;
-            const hasNote = localStorage.getItem(noteKey);
+
+            const cell = data[day]?.[p] ?? null;  // null for empty/section-17 slots
+            const td = document.createElement('td');
 
             if (cell) {
-                const roomHtml = cell.r.replace(/AI/g, '<span class="ai-highlight">AI</span>');
-                const isLecture = cell.t === 'L';
-                row.innerHTML += `<td><div class="${isLecture ? 'lecture-card' : 'lab-card'}${hasNote ? ' has-note' : ''}" onclick="showDetails('${day}','${p}','${currentSection}')" oncontextmenu="openNoteModal('${day}','${p}','${currentSection}');return false;"><div class="font-black text-[8px] sm:text-[11px] mb-1 leading-tight text-white text-center">${cell.n}</div><div class="text-[6px] sm:text-[9px] font-bold text-white/60 mb-1 text-center">${cell.d}</div><div class="room-text">${roomHtml}</div></div></td>`;
+                const roomHtml = (cell.r || '').replace(/AI/g, '<span class="ai-tag">AI</span>');
+                const isLec = cell.t === 'L';
+                td.innerHTML = `<div class="${isLec ? 'lec-card' : 'lab-card'}" onclick="showDetails('${day}','${p}','${currentSection}')">
+                    <div class="card-subj">${cell.n}</div>
+                    <div class="card-doc">${cell.d}</div>
+                    <div class="card-room">${roomHtml}</div>
+                </div>`;
             } else {
-                row.innerHTML += `<td><div class="free-card" onclick="openNoteModal('${day}','${p}','${currentSection}')">FREE</div></td>`;
+                td.innerHTML = `<div class="free-card">FREE</div>`;
             }
+            row.appendChild(td);
         });
         body.appendChild(row);
     });
 }
 
-// =============================================
+// ============================================
 // GROUP VIEW
-// =============================================
+// ============================================
 function showGroupSchedule(group) {
     isGroupView = true;
     currentGroup = group;
-    document.getElementById('sectionView').classList.add('hidden');
-    document.getElementById('groupView').classList.remove('hidden');
+
     document.getElementById('noticeBox').classList.add('hidden');
     document.getElementById('controlsArea').classList.remove('hidden');
+    document.getElementById('sectionView').classList.add('hidden');
+    document.getElementById('groupView').classList.remove('hidden');
+    document.getElementById('notesSection').classList.remove('hidden');
+
     document.getElementById('groupABtn').classList.add('hidden');
     document.getElementById('groupBBtn').classList.add('hidden');
+    const downloadBtn = document.getElementById('downloadBtn');
+    if (downloadBtn) downloadBtn.classList.add('hidden');
+    const printBtn = document.getElementById('printBtn');
+    if (printBtn) printBtn.classList.add('hidden');
+    const printGroupBtn = document.getElementById('printGroupBtn');
+    if (printGroupBtn) printGroupBtn.classList.remove('hidden');
     document.getElementById('backBtn').classList.remove('hidden');
-    document.getElementById('sectionSelect').value = "";
-    document.getElementById('sectionSelectMain').value = "";
+    
+    // Hide edit buttons (they're only for Section 17)
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveEditBtn');
+    const cancelBtn = document.getElementById('cancelEditBtn');
+    if (editBtn) editBtn.classList.add('hidden');
+    if (saveBtn) saveBtn.classList.add('hidden');
+    if (cancelBtn) cancelBtn.classList.add('hidden');
+
+    ['sectionSelect','sectionSelectMain'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+
     renderGroupTable(group);
-    showToast(`Group ${group} Schedule Loaded`, 'success');
+    showToast(`Group ${group} Loaded ✅`, 'success');
 }
 
 function renderGroupTable(group) {
-    const sections = group === 'A' ? ['1','2','3','4','5','6','7','8'] : ['9','10','11','12','13','14','15','16'];
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
-    const periods = ["1-2", "3-4", "5-6", "7-8"];
+    const sections = group === 'A'
+        ? ['1','2','3','4','5','6','7','8']
+        : ['9','10','11','12','13','14','15','16'];
+    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday"];
+    const periods = ["1-2","3-4","5-6","7-8"];
+
     document.getElementById('groupTitle').innerText = `Group ${group} Schedule`;
     const tbody = document.getElementById('groupTableBody');
     tbody.innerHTML = '';
-    sections.forEach((secNum, index) => {
+
+    sections.forEach((secNum, idx) => {
         const sec = allSections[secNum];
+        if (!sec) return;
+
         const tr = document.createElement('tr');
-        tr.style.animationDelay = `${index * 0.05}s`;
+        tr.style.animationDelay = `${idx * 0.05}s`;
+
         const th = document.createElement('th');
-        th.className = `section-header${sec.group === 'B' ? ' group-b' : ''}`;
-        th.innerText = `SEC ${secNum.padStart(2, '0')}`;
+        th.className = `grp-sec-th${sec.group === 'B' ? ' gb' : ''}`;
+        th.innerText = `SEC ${secNum.padStart(2,'0')}`;
         tr.appendChild(th);
+
         days.forEach(day => {
             const td = document.createElement('td');
             td.className = 'period-cell';
             periods.forEach(period => {
-                const cell = sec.data[day] && sec.data[day][period] ? sec.data[day][period] : null;
+                const cell = sec.data[day]?.[period] || null;
                 const info = periodInfo[period];
                 if (cell) {
-                    const isLab = cell.t === 'S';
-                    const miniCard = document.createElement('div');
-                    miniCard.className = `mini-card${isLab ? ' lab' : ''}`;
-                    miniCard.onclick = () => showDetails(day, period, secNum);
-                    miniCard.innerHTML = `<div class="mini-time">${period} | ${info.time} | ${info.duration}</div><div class="mini-subject">${cell.n}</div><div class="mini-doctor">${cell.d}</div><div class="mini-room">${cell.r.replace(/AI/g, '<span style="color:#00ffff">AI</span>')}</div>`;
-                    td.appendChild(miniCard);
+                    const mini = document.createElement('div');
+                    mini.className = `mini-card${cell.t === 'S' ? ' lab' : ''}`;
+                    mini.onclick = () => showDetails(day, period, secNum);
+                    mini.innerHTML = `<div class="mini-t">${period} | ${info.time}</div>
+                        <div class="mini-s">${cell.n}</div>
+                        <div class="mini-d">${cell.d}</div>
+                        <div class="mini-r">${(cell.r||'').replace(/AI/g,'<span style="color:#00ffff">AI</span>')}</div>`;
+                    td.appendChild(mini);
                 } else {
-                    const freeDiv = document.createElement('div');
-                    freeDiv.className = 'mini-free';
-                    freeDiv.innerHTML = `${period} | ${info.time}<br>FREE`;
-                    td.appendChild(freeDiv);
+                    const fr = document.createElement('div');
+                    fr.className = 'mini-free';
+                    fr.innerHTML = `${period} | ${info.time}<br>FREE`;
+                    td.appendChild(fr);
                 }
             });
             tr.appendChild(td);
@@ -220,667 +333,502 @@ function renderGroupTable(group) {
 
 function backToSection() { changeSection(currentSection); }
 
-function showDetails(day, period, sectionNum) {
-    if (isEditing) return;
-    const cell = allSections[sectionNum]?.data?.[day]?.[period];
+// ============================================
+// EDIT MODE — Section 17 only
+// ============================================
+let _editBackup = '';
+
+function enableEditing() {
+    const area = document.getElementById('captureArea');
+    if (!area) return;
+    _editBackup = area.innerHTML;
+    area.contentEditable = 'true';
+    area.focus();
+    document.getElementById('editBtn')?.classList.add('hidden');
+    document.getElementById('saveEditBtn')?.classList.remove('hidden');
+    document.getElementById('cancelEditBtn')?.classList.remove('hidden');
+    showToast('Edit Mode — اضغط على أي نص وعدّله', 'info');
+}
+
+function saveEditing() {
+    const area = document.getElementById('captureArea');
+    if (!area) return;
+    area.contentEditable = 'false';
+    localStorage.setItem('custom17-html', area.innerHTML);
+    document.getElementById('editBtn')?.classList.remove('hidden');
+    document.getElementById('saveEditBtn')?.classList.add('hidden');
+    document.getElementById('cancelEditBtn')?.classList.add('hidden');
+    showToast('تم الحفظ! ✅', 'success');
+}
+
+function cancelEditing() {
+    const area = document.getElementById('captureArea');
+    if (!area) return;
+    area.innerHTML = _editBackup;
+    area.contentEditable = 'false';
+    document.getElementById('editBtn')?.classList.remove('hidden');
+    document.getElementById('saveEditBtn')?.classList.add('hidden');
+    document.getElementById('cancelEditBtn')?.classList.add('hidden');
+    showToast('تم الإلغاء', 'info');
+}
+
+function showDetails(day, period, secNum) {
+    const cell = allSections[secNum]?.data?.[day]?.[period];
     if (cell) showToast(`${cell.n} | ${cell.d} | ${cell.r}`, 'info');
 }
 
-// =============================================
-// EDIT MODE (saves to localStorage)
-// =============================================
-function enableEditing() {
-    isEditing = true;
-    const area = isGroupView ? document.getElementById('groupView') : document.getElementById('captureArea');
-    originalContent = area.innerHTML;
-    area.contentEditable = "true";
-    document.getElementById('editModeBtn').classList.add('hidden');
-    document.getElementById('confirmBtn').classList.remove('hidden');
-    document.getElementById('cancelBtn').classList.remove('hidden');
-    showToast('Edit Mode: Click any text to edit', 'info');
-}
+// ============================================
+// NEW DOWNLOAD METHODS — COMPLETE REWRITE
+// ============================================
 
-function disableEditing(save) {
-    isEditing = false;
-    const area = isGroupView ? document.getElementById('groupView') : document.getElementById('captureArea');
-    if (save) {
-        if (!isGroupView) {
-            localStorage.setItem(`edit-${currentSection}`, area.innerHTML);
-        }
-        showToast('Changes Saved! Will persist after refresh.', 'success');
-    } else {
-        area.innerHTML = originalContent;
-        showToast('Changes Discarded', 'error');
+// SIMPLE PRINT METHOD (Most Reliable)
+function printTable() {
+    console.log('🖨️ Print triggered');
+    const original = document.getElementById('sectionView');
+    if (!original) {
+        showToast('Table not found', 'error');
+        return;
     }
-    area.contentEditable = "false";
-    document.getElementById('editModeBtn').classList.remove('hidden');
-    document.getElementById('confirmBtn').classList.add('hidden');
-    document.getElementById('cancelBtn').classList.add('hidden');
+    
+    // Just use browser print
+    const printContent = original.innerHTML;
+    const theme = document.documentElement.getAttribute('data-theme');
+    const bgColor = theme === 'light' ? '#dbeafe' : '#080d1a';
+    
+    const printWindow = window.open('', '_blank', 'width=1200,height=800');
+    printWindow.document.write(`
+<!DOCTYPE html>
+<html data-theme="${theme}">
+<head>
+    <meta charset="UTF-8">
+    <title>CS Schedule - Section ${currentSection}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        ${theme === 'dark' ? `
+        :root, [data-theme="dark"] {
+            --bg: #080d1a;
+            --bg2: #0f172a;
+            --card: rgba(15,23,42,0.97);
+            --txt: #e2e8f0;
+            --txt2: #cbd5e1;
+            --accent: #00d4ff;
+            --purple: #b829d9;
+            --green: #00ff88;
+            --orange: #ff6b00;
+            --gold: #ffb800;
+            --border: rgba(0,212,255,0.15);
+        }` : `
+        :root, [data-theme="light"] {
+            --bg: #dbeafe;
+            --bg2: #eff6ff;
+            --card: #ffffff;
+            --txt: #0c1f3d;
+            --txt2: #1e3a5f;
+            --accent: #1d4ed8;
+            --purple: #7e22ce;
+            --green: #15803d;
+            --orange: #c2410c;
+            --gold: #92400e;
+            --border: rgba(29,78,216,0.18);
+        }`}
+    </style>
+    <link href="style.css" rel="stylesheet">
+    <style>
+        body {
+            background: ${bgColor};
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+        .table-card {
+            max-width: none !important;
+            width: 100% !important;
+        }
+        .tbl-scroll {
+            overflow: visible !important;
+        }
+        .sched-table {
+            width: 100% !important;
+            min-width: 0 !important;
+        }
+        @media print {
+            body { background: ${theme === 'light' ? 'white' : '#080d1a'}; }
+            * { overflow: visible !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="table-card">
+        ${printContent}
+    </div>
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                window.print();
+            }, 500);
+        };
+    </script>
+</body>
+</html>
+    `);
+    printWindow.document.close();
 }
 
-// =============================================
-// DOWNLOAD IMAGE - FIXED FOR MOBILE
-// =============================================
-async function downloadTable() {
-    const area = document.getElementById('captureArea');
-    showToast('Generating image...', 'info');
+// Print for Group view
+function printGroupTable() {
+    console.log('🖨️ Print Group triggered');
+    const original = document.getElementById('groupView');
+    if (!original) {
+        showToast('Table not found', 'error');
+        return;
+    }
     
+    const printContent = original.innerHTML;
+    const theme = document.documentElement.getAttribute('data-theme');
+    const bgColor = theme === 'light' ? '#dbeafe' : '#080d1a';
+    
+    const printWindow = window.open('', '_blank', 'width=1200,height=800');
+    printWindow.document.write(`
+<!DOCTYPE html>
+<html data-theme="${theme}">
+<head>
+    <meta charset="UTF-8">
+    <title>Group ${currentGroup} Schedule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        ${theme === 'dark' ? `
+        :root, [data-theme="dark"] {
+            --bg: #080d1a;
+            --bg2: #0f172a;
+            --card: rgba(15,23,42,0.97);
+            --txt: #e2e8f0;
+            --txt2: #cbd5e1;
+            --accent: #00d4ff;
+            --purple: #b829d9;
+            --green: #00ff88;
+            --orange: #ff6b00;
+            --gold: #ffb800;
+            --border: rgba(0,212,255,0.15);
+        }` : `
+        :root, [data-theme="light"] {
+            --bg: #dbeafe;
+            --bg2: #eff6ff;
+            --card: #ffffff;
+            --txt: #0c1f3d;
+            --txt2: #1e3a5f;
+            --accent: #1d4ed8;
+            --purple: #7e22ce;
+            --green: #15803d;
+            --orange: #c2410c;
+            --gold: #92400e;
+            --border: rgba(29,78,216,0.18);
+        }`}
+    </style>
+    <link href="style.css" rel="stylesheet">
+    <style>
+        body {
+            background: ${bgColor};
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+        * { overflow: visible !important; }
+        @media print {
+            body { background: ${theme === 'light' ? 'white' : '#080d1a'}; }
+        }
+    </style>
+</head>
+<body>
+    ${printContent}
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                window.print();
+            }, 500);
+        };
+    </script>
+</body>
+</html>
+    `);
+    printWindow.document.close();
+}
+
+// MAIN DOWNLOAD FUNCTION — Uses Fixed Width Clone Method
+async function downloadTable() {
+    const btn = document.getElementById('downloadBtn');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+    showToast('جاري تحضير الصورة...', 'info');
+
     try {
-        // Wait for fonts to load
-        await document.fonts.ready;
+        const original = document.getElementById('sectionView');
+        const theme = document.documentElement.getAttribute('data-theme');
+        const bgColor = theme === 'light' ? '#dbeafe' : '#080d1a';
         
-        // Force styles for capture
-        const originalTransform = area.style.transform;
-        area.style.transform = 'none';
+        // Create FIXED WIDTH clone (no responsive, no overflow)
+        const clone = original.cloneNode(true);
+        clone.id = 'downloadClone';
+        clone.style.cssText = `
+            position: fixed;
+            left: -99999px;
+            top: 0;
+            width: 1200px !important;
+            max-width: none !important;
+            min-width: 0 !important;
+            background: ${bgColor};
+            padding: 20px;
+            overflow: visible !important;
+            transform: none !important;
+        `;
+        document.body.appendChild(clone);
         
-        const canvas = await html2canvas(area, {
-            backgroundColor: document.documentElement.getAttribute('data-theme') === 'light' ? '#f8fafc' : '#0a0f1c',
-            scale: window.devicePixelRatio > 1 ? 2 : 2,
+        // Force EVERY element to be fully visible
+        clone.querySelectorAll('*').forEach(el => {
+            const computed = window.getComputedStyle(el);
+            el.style.overflow = 'visible';
+            el.style.maxWidth = 'none';
+            el.style.minWidth = '0';
+        });
+        
+        // Fix table scroll wrapper
+        const scrollWrap = clone.querySelector('.tbl-scroll');
+        if (scrollWrap) {
+            scrollWrap.style.overflow = 'visible';
+            scrollWrap.style.width = '100%';
+            scrollWrap.style.maxWidth = 'none';
+            scrollWrap.style.margin = '0';
+            scrollWrap.style.padding = '0';
+        }
+        
+        // Fix the table itself
+        const table = clone.querySelector('.sched-table');
+        if (table) {
+            table.style.width = '100%';
+            table.style.minWidth = '0';
+            table.style.maxWidth = 'none';
+            table.style.tableLayout = 'fixed';
+            table.style.borderCollapse = 'separate';
+        }
+        
+        // Wait for layout to stabilize
+        await new Promise(r => setTimeout(r, 500));
+        
+        const finalWidth = 1200;
+        const finalHeight = clone.scrollHeight + 40;
+        
+        const canvas = await html2canvas(clone, {
+            backgroundColor: bgColor,
+            scale: 1,  // No scaling - original size only
             useCORS: true,
-            allowTaint: true,
+            allowTaint: false,
             logging: false,
+            width: finalWidth,
+            height: finalHeight,
+            windowWidth: finalWidth,
+            windowHeight: finalHeight,
+            x: 0,
+            y: 0,
             scrollX: 0,
             scrollY: 0,
-            windowWidth: area.scrollWidth,
-            width: area.scrollWidth,
-            height: area.scrollHeight,
-            onclone: function(clonedDoc) {
-                // Ensure cloned element has proper styles
-                const clonedArea = clonedDoc.getElementById('captureArea');
-                if (clonedArea) {
-                    clonedArea.style.transform = 'none';
-                    clonedArea.style.overflow = 'visible';
-                }
-            }
         });
-
-        area.style.transform = originalTransform;
-
-        const now = new Date();
-        const date = now.toISOString().split('T')[0];
-        const time = now.toTimeString().split(' ')[0].replace(/:/g, '-');
-        const filename = `CS_Section${currentSection}_${date}_${time}.jpg`;
-
-        // For mobile: use direct download
+        
+        document.body.removeChild(clone);
+        
         const link = document.createElement('a');
-        link.download = filename;
-        link.href = canvas.toDataURL('image/jpeg', 0.9);
+        link.download = `CS_Section${currentSection}_${new Date().toISOString().slice(0,10)}.jpg`;  // Changed to .jpg
+        link.href = canvas.toDataURL('image/jpeg', 0.7);  // JPEG at 70% quality
+        link.click();
         
-        // Trigger download
-        if (document.createEvent) {
-            const event = document.createEvent('MouseEvents');
-            event.initEvent('click', true, true);
-            link.dispatchEvent(event);
-        } else {
-            link.click();
-        }
+        showToast('تم حفظ الصورة! ✅', 'success');
         
-        showToast('Image downloaded!', 'success');
     } catch (err) {
-        console.error(err);
-        showToast('Download failed: ' + err.message, 'error');
+        console.error('Download error:', err);
+        showToast(`خطأ: ${err.message}`, 'error');
+    } finally {
+        if (btn) { 
+            btn.disabled = false; 
+            btn.innerHTML = '<i class="fas fa-download"></i><span>Download</span>'; 
+        }
     }
 }
 
-// =============================================
-// DOWNLOAD PDF - FIXED SIZE
-// =============================================
+// GROUP PDF — Rewritten
 function downloadGroupPDF() {
     const { jsPDF } = window.jspdf;
-    showToast('Generating PDF...', 'info');
-    const element = document.getElementById('groupView');
-    const clone = element.cloneNode(true);
-    
-    // Remove action buttons from clone
-    clone.querySelectorAll('.action-btn, button').forEach(btn => btn.remove());
-    
-    clone.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1200px;background:#0a0f1c;padding:20px;';
+    const btn = document.getElementById('pdfBtn');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+    showToast('جاري تحضير PDF...', 'info');
+
+    const original = document.getElementById('groupView');
+    const theme = document.documentElement.getAttribute('data-theme');
+    const bgColor = theme === 'light' ? '#dbeafe' : '#080d1a';
+
+    // Create fixed width clone
+    const clone = original.cloneNode(true);
+    clone.style.cssText = `
+        position: fixed;
+        left: -99999px;
+        top: 0;
+        width: 1200px !important;
+        background: ${bgColor};
+        padding: 20px;
+        overflow: visible !important;
+    `;
     document.body.appendChild(clone);
     
-    html2canvas(clone, { 
-        backgroundColor: '#0a0f1c', 
-        scale: 1,
-        useCORS: true, 
-        allowTaint: true, 
-        width: 1200, 
-        windowWidth: 1200,
-        logging: false
-    }).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('l', 'mm', 'a4');
-        const pageWidth = 297, pageHeight = 210;
-        const imgHeight = (canvas.height * pageWidth) / canvas.width;
-        
-        pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeight);
-        
-        if (imgHeight > pageHeight) {
-            let heightLeft = imgHeight - pageHeight;
-            let position = -pageHeight;
-            while (heightLeft > 0) {
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
-                position -= pageHeight;
-                heightLeft -= pageHeight;
-            }
-        }
-        
-        pdf.save(`CS_Schedule_Group_${currentGroup}.pdf`);
-        document.body.removeChild(clone);
-        showToast('PDF Downloaded!', 'success');
-    }).catch(err => { 
-        document.body.removeChild(clone); 
-        showToast('PDF Failed', 'error'); 
-        console.error(err); 
-    });
-}
-
-// =============================================
-// MODALS
-// =============================================
-function closeModal(id) { 
-    const modal = document.getElementById(id);
-    if (modal) modal.classList.add('hidden'); 
-}
-function showAcademicCalendar() { 
-    const modal = document.getElementById('calendarModal');
-    if (modal) modal.classList.remove('hidden'); 
-}
-
-// =============================================
-// NOTES
-// =============================================
-function openNoteModal(day, period, section) {
-    currentNoteSlot = { day, period, section };
-    const noteKey = `note-${section}-${day}-${period}`;
-    const textarea = document.getElementById('noteText');
-    if (textarea) textarea.value = localStorage.getItem(noteKey) || '';
-    const modal = document.getElementById('notesModal');
-    if (modal) modal.classList.remove('hidden');
-}
-
-function saveNote() {
-    if (!currentNoteSlot) return;
-    const { section, day, period } = currentNoteSlot;
-    const noteKey = `note-${section}-${day}-${period}`;
-    const textarea = document.getElementById('noteText');
-    const text = textarea ? textarea.value : '';
-    if (text.trim()) { 
-        localStorage.setItem(noteKey, text); 
-        showToast('Note saved!', 'success'); 
-    }
-    else { 
-        localStorage.removeItem(noteKey); 
-        showToast('Note removed', 'info'); 
-    }
-    closeModal('notesModal');
-    localStorage.removeItem(`edit-${currentSection}`);
-    if (currentSection === section) renderSectionTable(allSections[currentSection].data, `Section ${currentSection}`);
-}
-
-// =============================================
-// NOTES MANAGER
-// =============================================
-function showNotesManager() {
-    let modal = document.getElementById('notesManagerModal');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'notesManagerModal';
-        modal.className = 'modal hidden';
-        modal.innerHTML = `
-            <div class="modal-content notes-modal" style="max-width: 600px;">
-                <div class="modal-header">
-                    <h2 class="modal-title"><i class="fas fa-sticky-note"></i> My Notes</h2>
-                    <button onclick="closeModal('notesManagerModal')" class="modal-close"><i class="fas fa-times"></i></button>
-                </div>
-                <div class="modal-body" id="notesListContainer">
-                    <p style="color: var(--text-secondary); text-align: center;">Loading notes...</p>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
-    
-    const container = document.getElementById('notesListContainer');
-    const notes = [];
-    
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith('note-')) {
-            const parts = key.split('-');
-            if (parts.length === 4) {
-                notes.push({
-                    key: key,
-                    section: parts[1],
-                    day: parts[2],
-                    period: parts[3],
-                    text: localStorage.getItem(key)
-                });
-            }
-        }
-    }
-    
-    if (notes.length === 0) {
-        container.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                <i class="fas fa-sticky-note" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
-                <p>No notes yet. Right-click on any subject to add a note!</p>
-            </div>
-        `;
-    } else {
-        container.innerHTML = notes.map(note => `
-            <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; margin-bottom: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
-                    <span style="font-size: 0.75rem; color: var(--color-lecture); font-weight: 700;">
-                        <i class="fas fa-calendar"></i> ${note.day} ${note.period} | Section ${note.section}
-                    </span>
-                    <button onclick="deleteNote('${note.key}')" style="background: #ef4444; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 0.7rem;">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-                <p style="color: var(--text-primary); font-size: 0.85rem; line-height: 1.5;">${note.text}</p>
-            </div>
-        `).join('');
-    }
-    
-    modal.classList.remove('hidden');
-}
-
-function deleteNote(key) {
-    localStorage.removeItem(key);
-    const sectionMatch = key.match(/note-(\d+)-/);
-    if (sectionMatch) {
-        localStorage.removeItem(`edit-${sectionMatch[1]}`);
-    }
-    showNotesManager();
-    showToast('Note deleted', 'info');
-}
-
-// =============================================
-// DESIGNER MODE - WITH TOUCH SUPPORT
-// =============================================
-let draggedSubject = null;
-let selectedSubjectForMobile = null;
-let designerSchedule = {};
-
-const designerSubjects = [
-    { code: "BA", name: "Business Administration 💼", type: "L", doctor: "Dr. Sameh Mohamed", room: "مدرج 1 إعلام" },
-    { code: "DS", name: "Data Structure 🌳", type: "L", doctor: "Dr. Osama Shafik", room: "مدرج 5 إعلام" },
-    { code: "DS_LAB", name: "Data Structure Lab 🌳", type: "S", doctor: "T.A Various", room: "Lab" },
-    { code: "SA", name: "System Analysis 📊", type: "L", doctor: "Dr. Magdy Elhenawy", room: "مدرج 7 علوم حاسب" },
-    { code: "SA_LAB", name: "System Analysis Lab 📊", type: "S", doctor: "T.A Various", room: "Lab" },
-    { code: "WP", name: "Web Programming 🌐", type: "L", doctor: "Dr. Mohamed Mostafa", room: "مدرج 5 إعلام" },
-    { code: "WP_LAB", name: "Web Programming Lab 🌐", type: "S", doctor: "T.A Various", room: "Lab" },
-    { code: "CN", name: "Computer Network 🔌", type: "L", doctor: "Dr. Hesham Abo el-fotoh", room: "مدرج 5 إعلام" },
-    { code: "CN_LAB", name: "Computer Network Lab 🔌", type: "S", doctor: "T.A Various", room: "Lab" },
-    { code: "HR", name: "Human Rights ⚖️", type: "L", doctor: "Dr. Ahmed Noaman", room: "مدرج 5 إعلام" }
-];
-
-function openDesignerMode() {
-    const modal = document.getElementById('designerModal');
-    if (modal) modal.classList.remove('hidden');
-    initDesigner();
-}
-
-function initDesigner() {
-    designerSchedule = {};
-    selectedSubjectForMobile = null;
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
-    const periods = ["1-2", "3-4", "5-6", "7-8"];
-    days.forEach(day => { 
-        designerSchedule[day] = {}; 
-        periods.forEach(p => { designerSchedule[day][p] = null; }); 
-    });
-    renderSubjectCards();
-    renderDesignerTable();
-}
-
-function countSubjects() {
-    let lectures = 0, labs = 0;
-    Object.values(designerSchedule).forEach(day => {
-        Object.values(day).forEach(sub => { 
-            if (sub) { 
-                if (sub.type === 'L') lectures++; 
-                else labs++; 
-            } 
-        });
-    });
-    return { lectures, labs };
-}
-
-function isSubjectUsedOnDay(day, code) {
-    return Object.values(designerSchedule[day]).some(s => s && s.code === code);
-}
-
-function checkConflicts() {
-    const conflicts = [];
-    Object.entries(designerSchedule).forEach(([day, slots]) => {
-        const used = new Set();
-        Object.values(slots).forEach(sub => {
-            if (sub) { 
-                if (used.has(sub.code)) conflicts.push(`${sub.name} appears twice on ${day}`); 
-                used.add(sub.code); 
-            }
-        });
-    });
-    const warn = document.getElementById('conflictWarning');
-    const txt = document.getElementById('conflictText');
-    if (conflicts.length > 0) { 
-        if (warn) warn.classList.remove('hidden'); 
-        if (txt) txt.innerText = conflicts.join(' | '); 
-    }
-    else { 
-        if (warn) warn.classList.add('hidden'); 
-    }
-    return conflicts.length === 0;
-}
-
-function updateValidation() {
-    const { lectures, labs } = countSubjects();
-    const isValid = lectures === 6 && labs === 4;
-    let div = document.getElementById('designerValidation');
-    if (!div) {
-        div = document.createElement('div');
-        div.id = 'designerValidation';
-        const body = document.querySelector('#designerModal .modal-body');
-        if (body) body.insertBefore(div, body.children[3]);
-    }
-    div.className = isValid ? 'designer-validation valid' : 'designer-validation';
-    div.innerHTML = `<i class="fas fa-${isValid ? 'check-circle' : 'info-circle'}"></i> Lectures: ${lectures}/6 &nbsp;|&nbsp; Labs: ${labs}/4 ${isValid ? '— Ready to save! ✅' : ''}`;
-}
-
-function renderSubjectCards() {
-    const container = document.getElementById('subjectCards');
-    if (!container) return;
-    container.innerHTML = '';
-    const isMobile = window.innerWidth <= 768 || 'ontouchstart' in window;
-    
-    designerSubjects.forEach(sub => {
-        const card = document.createElement('div');
-        card.className = `subject-card ${sub.type === 'L' ? 'lecture' : 'lab'}`;
-        card.draggable = !isMobile; // Disable drag on mobile
-        card.dataset.code = sub.code;
-        card.innerHTML = `<div class="subject-card-name">${sub.name}</div><div class="subject-card-type">${sub.type === 'L' ? 'Lecture' : 'Lab'} — ${sub.doctor}</div>`;
-        
-        // Desktop: Drag events
-        if (!isMobile) {
-            card.addEventListener('dragstart', function(e) { 
-                draggedSubject = designerSubjects.find(s => s.code === this.dataset.code); 
-                this.classList.add('dragging'); 
-                e.dataTransfer.effectAllowed = 'copy'; 
-            });
-            card.addEventListener('dragend', function() { 
-                this.classList.remove('dragging'); 
-            });
-        } else {
-            // Mobile: Tap to select
-            card.addEventListener('click', function() {
-                // Deselect others
-                document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
-                
-                if (selectedSubjectForMobile === sub) {
-                    selectedSubjectForMobile = null;
-                    this.classList.remove('selected');
-                    showToast('Subject deselected', 'info');
-                } else {
-                    selectedSubjectForMobile = sub;
-                    this.classList.add('selected');
-                    showToast(`Selected: ${sub.name} - Tap a slot to place`, 'success');
-                }
-            });
-        }
-        
-        container.appendChild(card);
-    });
-}
-
-function renderDesignerTable() {
-    const tbody = document.getElementById('designerTableBody');
-    if (!tbody) return;
-    tbody.innerHTML = '';
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
-    const periods = ["1-2", "3-4", "5-6", "7-8"];
-    const isMobile = window.innerWidth <= 768 || 'ontouchstart' in window;
-    
-    days.forEach(day => {
-        const row = document.createElement('tr');
-        const dayTd = document.createElement('td');
-        dayTd.textContent = day.substring(0, 3);
-        row.appendChild(dayTd);
-        
-        periods.forEach((period, idx) => {
-            if (idx === 2) {
-                const brk = document.createElement('td');
-                brk.innerHTML = '<div class="break-cell" style="min-height:45px;"><span style="font-size:0.7rem;">☕</span></div>';
-                row.appendChild(brk);
-            }
-            
-            const td = document.createElement('td');
-            const slot = document.createElement('div');
-            slot.className = 'drop-slot';
-            slot.dataset.day = day;
-            slot.dataset.period = period;
-            
-            const sub = designerSchedule[day][period];
-            if (sub) {
-                slot.classList.add('occupied', sub.type === 'L' ? 'lecture' : 'lab');
-                slot.innerHTML = `<div class="drop-slot-content"><div class="drop-slot-subject">${sub.name}</div><span class="drop-slot-remove" onclick="event.stopPropagation(); removeFromSlot('${day}','${period}')"><i class="fas fa-times"></i> Remove</span></div>`;
-            } else {
-                slot.innerHTML = '<span class="drop-slot-placeholder">Drop here</span>';
-            }
-            
-            // Desktop: Drag and drop
-            if (!isMobile) {
-                slot.addEventListener('dragover', function(e) { 
-                    e.preventDefault(); 
-                    e.dataTransfer.dropEffect = 'copy'; 
-                    this.classList.add('drag-over'); 
-                });
-                slot.addEventListener('dragleave', function() { 
-                    this.classList.remove('drag-over'); 
-                });
-                slot.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('drag-over');
-                    handleDrop(this.dataset.day, this.dataset.period);
-                });
-            } else {
-                // Mobile: Tap to place
-                slot.addEventListener('click', function() {
-                    if (selectedSubjectForMobile) {
-                        handleDrop(this.dataset.day, this.dataset.period);
-                    } else {
-                        showToast('Select a subject first!', 'error');
-                    }
-                });
-            }
-            
-            td.appendChild(slot);
-            row.appendChild(td);
-        });
-        tbody.appendChild(row);
+    // Force visibility
+    clone.querySelectorAll('*').forEach(el => {
+        el.style.overflow = 'visible';
+        el.style.maxWidth = 'none';
     });
     
-    updateValidation();
-    checkConflicts();
-}
-
-function handleDrop(day, period) {
-    const subjectToPlace = draggedSubject || selectedSubjectForMobile;
-    if (!subjectToPlace) return;
-    
-    if (designerSchedule[day][period]) { 
-        showToast('Slot occupied! Remove first.', 'error'); 
-        return; 
-    }
-    if (isSubjectUsedOnDay(day, subjectToPlace.code)) { 
-        showToast(`${subjectToPlace.name} already on ${day}!`, 'error'); 
-        return; 
+    const scrollWrap = clone.querySelector('.tbl-scroll');
+    if (scrollWrap) {
+        scrollWrap.style.overflow = 'visible';
+        scrollWrap.style.width = '100%';
     }
     
-    designerSchedule[day][period] = subjectToPlace;
-    
-    // Clear selection after place on mobile
-    if (selectedSubjectForMobile) {
-        selectedSubjectForMobile = null;
-        document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
-    }
-    
-    renderDesignerTable();
-    updateValidation();
-    checkConflicts();
-    showToast(`Added to ${day} ${period}`, 'success');
-}
-
-function removeFromSlot(day, period) {
-    designerSchedule[day][period] = null;
-    renderDesignerTable();
-    updateValidation();
-    checkConflicts();
-    showToast('Subject removed', 'info');
-}
-
-function clearDesignerSchedule() {
-    Object.keys(designerSchedule).forEach(day => {
-        Object.keys(designerSchedule[day]).forEach(p => { designerSchedule[day][p] = null; });
-    });
-    selectedSubjectForMobile = null;
-    document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
-    renderDesignerTable();
-    showToast('Schedule cleared', 'info');
-}
-
-function confirmSaveDesigner() {
-    const { lectures, labs } = countSubjects();
-    if (lectures !== 6 || labs !== 4) { 
-        showToast(`Need exactly 6 lectures & 4 labs. Current: ${lectures}L / ${labs}Lab`, 'error'); 
-        return; 
-    }
-    if (!checkConflicts()) { 
-        showToast('Resolve conflicts first!', 'error'); 
-        return; 
+    const table = clone.querySelector('.sched-table');
+    if (table) {
+        table.style.width = '100%';
+        table.style.tableLayout = 'fixed';
     }
 
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
-    const periods = ["1-2", "3-4", "5-6", "7-8"];
-    let summary = '';
-    days.forEach(day => {
-        const slots = periods.map(p => designerSchedule[day][p]).filter(Boolean);
-        if (slots.length) summary += `<strong style="color:var(--color-lecture)">${day}:</strong> ${slots.map(s => s.name).join(', ')}<br>`;
-    });
-
-    const confirmSummary = document.getElementById('confirmSummary');
-    if (confirmSummary) confirmSummary.innerHTML = summary || 'Empty schedule';
-    
-    const modal = document.getElementById('designerConfirmModal');
-    if (modal) modal.classList.remove('hidden');
-}
-
-function doSaveDesigner() {
-    const customData = {
-        group: 'Custom',
-        data: JSON.parse(JSON.stringify(designerSchedule))
-    };
-    
-    localStorage.setItem('customSectionData', JSON.stringify(customData));
-    customSectionData = customData;
-    allSections.custom = customData;
-    
-    if (!hasCustomSection) {
-        ['sectionSelect', 'sectionSelectMain'].forEach(id => {
-            const sel = document.getElementById(id);
-            if (!sel) return;
-            const existing = sel.querySelector('option[value="custom"]');
-            if (existing) existing.remove();
-            
-            const opt = document.createElement('option');
-            opt.value = 'custom';
-            opt.textContent = '🎨 My Custom Section';
-            sel.appendChild(opt);
-        });
-        hasCustomSection = true;
-    }
-
-    closeModal('designerConfirmModal');
-    closeModal('designerModal');
-    
     setTimeout(() => {
-        changeSection('custom');
-        showToast('Custom schedule saved! 🎉', 'success');
-    }, 100);
+        html2canvas(clone, {
+            backgroundColor: bgColor,
+            scale: 1,  // No scaling
+            useCORS: true,
+            allowTaint: false,
+            logging: false,
+            width: 1200,
+            height: clone.scrollHeight + 40,
+        }).then(canvas => {
+            document.body.removeChild(clone);
+            // Use JPEG with lower quality for much smaller size
+            const imgData = canvas.toDataURL('image/jpeg', 0.7);
+            const pdf = new jsPDF('l', 'mm', 'a4');
+            const pgW = 297;
+            const pgH = (canvas.height * pgW) / canvas.width;
+
+            if (pgH <= 210) {
+                pdf.addImage(imgData, 'JPEG', 0, 0, pgW, pgH);
+            } else {
+                let yPos = 0;
+                let remaining = pgH;
+                let page = 0;
+                while (remaining > 0) {
+                    if (page > 0) pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, -page * 210, pgW, pgH);
+                    remaining -= 210;
+                    page++;
+                }
+            }
+
+            pdf.save(`Group_${currentGroup}_${new Date().toISOString().slice(0,10)}.pdf`);
+            showToast('تم حفظ PDF! 📄', 'success');
+        }).catch(err => {
+            console.error(err);
+            showToast('فشل الحفظ', 'error');
+        }).finally(() => {
+            if (btn) { 
+                btn.disabled = false; 
+                btn.innerHTML = '<i class="fas fa-file-pdf"></i><span>Save PDF</span>'; 
+            }
+        });
+    }, 800);
 }
 
-// =============================================
-// KEYBOARD SHORTCUTS
-// =============================================
-document.addEventListener('keydown', (e) => {
-    const tag = document.activeElement.tagName;
-    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) return;
-    if (document.activeElement.isContentEditable) return;
 
-    const key = e.key;
+// ============================================
+// MODALS
+// ============================================
+function closeModal(id) {
+    document.getElementById(id)?.classList.add('hidden');
+}
 
-    if (!e.shiftKey && key >= '1' && key <= '9') { 
-        changeSection(key); 
-        return; 
-    }
+function showAcademicCalendar() {
+    document.getElementById('calendarModal')?.classList.remove('hidden');
+}
 
-    if (e.shiftKey && key >= '1' && key <= '7') { 
-        changeSection(String(parseInt(key) + 9)); 
-        return; 
-    }
-
-    switch (key.toLowerCase()) {
-        case 'a': 
-            const groupABtn = document.getElementById('groupABtn');
-            if (groupABtn && !groupABtn.classList.contains('hidden')) showGroupSchedule('A'); 
-            break;
-        case 'b': 
-            const groupBBtn = document.getElementById('groupBBtn');
-            if (groupBBtn && !groupBBtn.classList.contains('hidden')) showGroupSchedule('B'); 
-            break;
-        case 'd': 
-            openDesignerMode(); 
-            break;
-        case 'c': 
-            showAcademicCalendar(); 
-            break;
-        case 't': 
-            toggleTheme(); 
-            break;
-        case 'n': 
-            showNotesManager(); 
-            break;
-        case '?': {
-            const panel = document.getElementById('shortcutsPanel');
-            if (panel) panel.classList.toggle('visible');
-            break;
-        }
-        case 'escape': {
-            document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-            const panel = document.getElementById('shortcutsPanel');
-            if (panel) panel.classList.remove('visible');
-            break;
-        }
-    }
-});
-
-// =============================================
-// CLOSE MODAL ON BACKDROP CLICK
-// =============================================
 window.onclick = function(e) {
     if (e.target.classList.contains('modal')) e.target.classList.add('hidden');
 };
 
-// =============================================
-// ONLINE / OFFLINE
-// =============================================
-window.addEventListener('online', () => showToast('Back online! ✅', 'success'));
-window.addEventListener('offline', () => showToast('You are offline. App still works! 📴', 'info'));
+// ============================================
+// FREE NOTES
+// ============================================
+let notesTimer = null;
 
-// =============================================
-// PWA INSTALL
-// =============================================
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-    deferredPrompt = e;
+function autoSaveNotes() {
+    const ta = document.getElementById('freeNotesArea');
+    const saved = document.getElementById('notesSaved');
+    const count = document.getElementById('notesCount');
+
+    if (count) count.textContent = `${ta.value.length} characters`;
+
+    clearTimeout(notesTimer);
+    notesTimer = setTimeout(() => {
+        localStorage.setItem('free-notes', ta.value);
+        if (saved) {
+            saved.classList.add('visible');
+            setTimeout(() => saved.classList.remove('visible'), 2000);
+        }
+    }, 600);
+}
+
+function updateNotesCount() {
+    const ta = document.getElementById('freeNotesArea');
+    const count = document.getElementById('notesCount');
+    if (ta && count) count.textContent = `${ta.value.length} characters`;
+}
+
+function clearAllNotes() {
+    const ta = document.getElementById('freeNotesArea');
+    if (!ta) return;
+    if (confirm('هتمسح كل الملاحظات؟ / Clear all notes?')) {
+        ta.value = '';
+        localStorage.removeItem('free-notes');
+        updateNotesCount();
+        showToast('تم مسح الملاحظات', 'info');
+    }
+}
+
+// ============================================
+// KEYBOARD SHORTCUTS
+// ============================================
+document.addEventListener('keydown', (e) => {
+    const tag = document.activeElement.tagName;
+    if (['INPUT','TEXTAREA','SELECT'].includes(tag)) return;
+    if (document.activeElement.isContentEditable) return;
+
+    const k = e.key;
+
+    // Sections 1–9
+    if (!e.shiftKey && k >= '1' && k <= '9') { changeSection(k); return; }
+    // Sections 10–16 (Shift+1–7)
+    if (e.shiftKey && k >= '1' && k <= '7') { changeSection(String(parseInt(k)+9)); return; }
+
+    switch (k.toLowerCase()) {
+        case 'a':
+            if (!document.getElementById('groupABtn')?.classList.contains('hidden')) showGroupSchedule('A');
+            break;
+        case 'b':
+            if (!document.getElementById('groupBBtn')?.classList.contains('hidden')) showGroupSchedule('B');
+            break;
+        case 'c':
+            showAcademicCalendar();
+            break;
+        case 't':
+            toggleTheme();
+            break;
+        case 'escape':
+            document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+            break;
+    }
 });
+
+// ============================================
+// ONLINE / OFFLINE
+// ============================================
+window.addEventListener('online',  () => showToast('متصل بالإنترنت ✅', 'success'));
+window.addEventListener('offline', () => showToast('غير متصل — التطبيق لا يزال يعمل 📴', 'info'));
