@@ -393,7 +393,7 @@ function printTable() {
     // Just use browser print
     const printContent = original.innerHTML;
     const theme = document.documentElement.getAttribute('data-theme');
-    const bgColor = theme === 'light' ? '#dbeafe' : '#080d1a';
+    const bgColor = theme === 'light' ? '#dbeafe' : '#0a051f';
     
     const printWindow = window.open('', '_blank', 'width=1200,height=800');
     printWindow.document.write(`
@@ -407,17 +407,17 @@ function printTable() {
     <style>
         ${theme === 'dark' ? `
         :root, [data-theme="dark"] {
-            --bg: #080d1a;
-            --bg2: #0f172a;
-            --card: rgba(15,23,42,0.97);
-            --txt: #e2e8f0;
-            --txt2: #cbd5e1;
-            --accent: #00d4ff;
-            --purple: #b829d9;
-            --green: #00ff88;
-            --orange: #ff6b00;
-            --gold: #ffb800;
-            --border: rgba(0,212,255,0.15);
+            --bg: #0a051f;
+            --bg2: #1a0a3e;
+            --card: rgba(26,10,62,0.85);
+            --txt: #f5e6d3;
+            --txt2: #d4c5b0;
+            --accent: #ffd700;
+            --purple: #9370db;
+            --green: #32cd32;
+            --orange: #ff8c00;
+            --gold: #ffd700;
+            --border: rgba(255,215,0,0.15);
         }` : `
         :root, [data-theme="light"] {
             --bg: #dbeafe;
@@ -452,7 +452,7 @@ function printTable() {
             min-width: 0 !important;
         }
         @media print {
-            body { background: ${theme === 'light' ? 'white' : '#080d1a'}; }
+            body { background: ${theme === 'light' ? 'white' : '#0a051f'}; }
             * { overflow: visible !important; }
         }
     </style>
@@ -485,7 +485,7 @@ function printGroupTable() {
     
     const printContent = original.innerHTML;
     const theme = document.documentElement.getAttribute('data-theme');
-    const bgColor = theme === 'light' ? '#dbeafe' : '#080d1a';
+    const bgColor = theme === 'light' ? '#dbeafe' : '#0a051f';
     
     const printWindow = window.open('', '_blank', 'width=1200,height=800');
     printWindow.document.write(`
@@ -499,17 +499,17 @@ function printGroupTable() {
     <style>
         ${theme === 'dark' ? `
         :root, [data-theme="dark"] {
-            --bg: #080d1a;
-            --bg2: #0f172a;
-            --card: rgba(15,23,42,0.97);
-            --txt: #e2e8f0;
-            --txt2: #cbd5e1;
-            --accent: #00d4ff;
-            --purple: #b829d9;
-            --green: #00ff88;
-            --orange: #ff6b00;
-            --gold: #ffb800;
-            --border: rgba(0,212,255,0.15);
+            --bg: #0a051f;
+            --bg2: #1a0a3e;
+            --card: rgba(26,10,62,0.85);
+            --txt: #f5e6d3;
+            --txt2: #d4c5b0;
+            --accent: #ffd700;
+            --purple: #9370db;
+            --green: #32cd32;
+            --orange: #ff8c00;
+            --gold: #ffd700;
+            --border: rgba(255,215,0,0.15);
         }` : `
         :root, [data-theme="light"] {
             --bg: #dbeafe;
@@ -534,7 +534,7 @@ function printGroupTable() {
         }
         * { overflow: visible !important; }
         @media print {
-            body { background: ${theme === 'light' ? 'white' : '#080d1a'}; }
+            body { background: ${theme === 'light' ? 'white' : '#0a051f'}; }
         }
     </style>
 </head>
@@ -562,7 +562,7 @@ async function downloadTable() {
     try {
         const original = document.getElementById('sectionView');
         const theme = document.documentElement.getAttribute('data-theme');
-        const bgColor = theme === 'light' ? '#dbeafe' : '#080d1a';
+        const bgColor = theme === 'light' ? '#dbeafe' : '#0a051f';
         
         // Create FIXED WIDTH clone (no responsive, no overflow)
         const clone = original.cloneNode(true);
@@ -660,7 +660,7 @@ function downloadGroupPDF() {
 
     const original = document.getElementById('groupView');
     const theme = document.documentElement.getAttribute('data-theme');
-    const bgColor = theme === 'light' ? '#dbeafe' : '#080d1a';
+    const bgColor = theme === 'light' ? '#dbeafe' : '#0a051f';
 
     // Create fixed width clone
     const clone = original.cloneNode(true);
