@@ -1205,11 +1205,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // Format: subject name (lowercase, no emojis) -> drive folder link
 const subjectDriveLinks = {
     "business administration": "https://drive.google.com/drive/folders/1_GE-P572jVZLhJZqnU7t7ahl5GxVTU8I",
-    "data structure": "https://drive.google.com/drive/folders/1EcZ47bZzeT0lER5etJe-2viYPueFYtb2",
-    "web programming": "https://drive.google.com/drive/folders/1RIdM672Mfhcr8KhVpzXgJr-DsWC0zL7A",
-    "computer network": "https://drive.google.com/drive/folders/1XlfEGfvmQigDkWkEgxO9ewxxBN9n3ElF",
+    "data structure": "https://drive.google.com/drive/folders/1RIdM672Mfhcr8KhVpzXgJr-DsWC0zL7A",
+    "web programming": "https://drive.google.com/drive/folders/10WOEaho7ElyojafkQRgm6fBodkFXlRi-",
+    "computer network": "https://drive.google.com/drive/folders/1EcZ47bZzeT0lER5etJe-2viYPueFYtb2",
     "system analysis": "https://drive.google.com/drive/folders/11OcZ2n_v--nO3KehMMDu8onO15kxz-ZJ",
-    "human rights": "https://drive.google.com/drive/folders/10WOEaho7ElyojafkQRgm6fBodkFXlRi-"
+    "human rights": "https://drive.google.com/drive/folders/1XlfEGfvmQigDkWkEgxO9ewxxBN9n3ElF"
 };
 
 let longPressTimer = null;
