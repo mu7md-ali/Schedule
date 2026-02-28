@@ -1212,102 +1212,48 @@ const subjectDriveLinks = {
     "human rights": "https://drive.google.com/drive/folders/1XlfEGfvmQigDkWkEgxO9ewxxBN9n3ElF"
 };
 
-let longPressTimer = null;
-let isLongPress = false;
-const LONG_PRESS_DURATION = 800; // 0.8 seconds - faster response
-
 // ============================================
-// LONG PRESS DETECTION
+// DOUBLE CLICK / DOUBLE TAP DETECTION
 // ============================================
 
-function initLongPressDetection() {
-    // Use event delegation on the table body
+function initDoubleTapDetection() {
     const tableBody = document.getElementById('tableBody');
     if (!tableBody) return;
 
-    tableBody.addEventListener('mousedown', handlePressStart);
-    tableBody.addEventListener('touchstart', handlePressStart, { passive: false });
-    
-    tableBody.addEventListener('mouseup', handlePressEnd);
-    tableBody.addEventListener('touchend', handlePressEnd);
-    tableBody.addEventListener('touchcancel', handlePressEnd);
-    
-    tableBody.addEventListener('mouseleave', handlePressCancel);
-    
-    // Prevent context menu on long press
-    tableBody.addEventListener('contextmenu', (e) => {
-        if (isLongPress) {
+    // Double click for desktop
+    tableBody.addEventListener('dblclick', handleDoubleClick);
+
+    // Double tap for mobile
+    let lastTap = 0;
+    tableBody.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        const card = e.target.closest('.lec-card, .lab-card');
+        if (!card) return;
+
+        if (now - lastTap < 300) {
             e.preventDefault();
+            const subjectName = card.querySelector('.card-subj')?.textContent?.trim();
+            if (subjectName) {
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => { card.style.transform = ''; }, 150);
+                if (navigator.vibrate) navigator.vibrate(50);
+                openSubjectFiles(subjectName);
+            }
         }
+        lastTap = now;
     });
 }
 
-function handlePressStart(e) {
-    // Find the closest card element
+function handleDoubleClick(e) {
     const card = e.target.closest('.lec-card, .lab-card');
     if (!card) return;
-    
-    // Get subject name from the card
+
     const subjectName = card.querySelector('.card-subj')?.textContent?.trim();
     if (!subjectName) return;
-    
-    isLongPress = false;
-    
-    // Show indicator
-    showLongPressIndicator();
-    
-    // Start timer
-    longPressTimer = setTimeout(() => {
-        isLongPress = true;
-        hideLongPressIndicator();
-        openSubjectFiles(subjectName);
-        
-        // Add visual feedback
-        card.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            card.style.transform = '';
-        }, 150);
-        
-        // Vibrate if supported
-        if (navigator.vibrate) {
-            navigator.vibrate(50);
-        }
-    }, LONG_PRESS_DURATION);
-}
 
-function handlePressEnd(e) {
-    if (longPressTimer) {
-        clearTimeout(longPressTimer);
-        longPressTimer = null;
-    }
-    hideLongPressIndicator();
-}
-
-function handlePressCancel(e) {
-    if (longPressTimer) {
-        clearTimeout(longPressTimer);
-        longPressTimer = null;
-    }
-    hideLongPressIndicator();
-}
-
-function showLongPressIndicator() {
-    let indicator = document.getElementById('longPressIndicator');
-    if (!indicator) {
-        indicator = document.createElement('div');
-        indicator.id = 'longPressIndicator';
-        indicator.className = 'long-press-indicator';
-        indicator.innerHTML = '<i class="fas fa-hand-pointer"></i> Keep holding to view files...';
-        document.body.appendChild(indicator);
-    }
-    indicator.classList.add('show');
-}
-
-function hideLongPressIndicator() {
-    const indicator = document.getElementById('longPressIndicator');
-    if (indicator) {
-        indicator.classList.remove('show');
-    }
+    card.style.transform = 'scale(0.95)';
+    setTimeout(() => { card.style.transform = ''; }, 150);
+    openSubjectFiles(subjectName);
 }
 
 // ============================================
