@@ -1352,5 +1352,5 @@ function openFolder(folderName) {
 
 // Initialize long press detection when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    initLongPressDetection();
+    initDoubleTapDetection();
 });
