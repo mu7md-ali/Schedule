@@ -1276,9 +1276,10 @@ function openSubjectFiles(subjectName) {
 }
 
 function cleanSubjectName(name) {
-    // Remove emojis and extra spaces, convert to lowercase
+    // Remove emojis, variation selectors, and extra spaces, convert to lowercase
     return name
-        .replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '')
+        .replace(/\p{Emoji}/gu, '')
+        .replace(/[\u{FE00}-\u{FE0F}]/gu, '')
         .replace(/\s+/g, ' ')
         .trim()
         .toLowerCase();
