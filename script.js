@@ -1217,15 +1217,12 @@ const subjectDriveLinks = {
 // ============================================
 
 function initDoubleTapDetection() {
-    const tableBody = document.getElementById('tableBody');
-    if (!tableBody) return;
-
-    // Double click for desktop
-    tableBody.addEventListener('dblclick', handleDoubleClick);
+    // Double click for desktop - on document to catch dynamically added cards
+    document.addEventListener('dblclick', handleDoubleClick);
 
     // Double tap for mobile
     let lastTap = 0;
-    tableBody.addEventListener('touchend', (e) => {
+    document.addEventListener('touchend', (e) => {
         const now = Date.now();
         const card = e.target.closest('.lec-card, .lab-card');
         if (!card) return;
