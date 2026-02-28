@@ -1,0 +1,73 @@
+{
+  "المستوى_الأول": {
+    "الترم_الأول": [
+      { "id": 99, "name": "English Language", "prerequisite_id": null, "chain": "lang" },
+      { "id": 2, "name": "Creative Thinking", "prerequisite_id": null, "chain": "soft" },
+      { "id": 3, "name": "Calculus", "prerequisite_id": null, "chain": "math" },
+      { "id": 4, "name": "Intro to CS", "prerequisite_id": null, "chain": "prog" },
+      { "id": 5, "name": "Physics", "prerequisite_id": null, "chain": "science" },
+      { "id": 1, "name": "Electronics", "prerequisite_id": null, "chain": "hardware" }
+    ],
+    "الترم_الثاني": [
+      { "id": 6, "name": "Technical Writing", "prerequisite_id": 99, "chain": "lang" },
+      { "id": 7, "name": "Discrete Math", "prerequisite_id": 8, "chain": "math" },
+      { "id": 8, "name": "Linear Algebra", "prerequisite_id": 3, "chain": "math" },
+      { "id": 9, "name": "Programming", "prerequisite_id": 4, "chain": "prog" },
+      { "id": 10, "name": "Info Systems", "prerequisite_id": null, "chain": "systems" },
+      { "id": 11, "name": "Logic Design", "prerequisite_id": 1, "chain": "hardware" }
+    ]
+  },
+  "المستوى_الثاني": {
+    "الترم_الأول": [
+      { "id": 12, "name": "Statistics", "prerequisite_id": 7, "chain": "math" },
+      { "id": 13, "name": "Work Ethics", "prerequisite_id": null, "chain": "soft" },
+      { "id": 14, "name": "Operations Research", "prerequisite_id": 12, "chain": "math" },
+      { "id": 15, "name": "OOP", "prerequisite_id": 9, "chain": "prog" },
+      { "id": 16, "name": "File Processing", "prerequisite_id": 15, "chain": "prog" },
+      { "id": 17, "name": "Assembly", "prerequisite_id": 11, "chain": "hardware" }
+    ],
+    "الترم_الثاني": [
+      { "id": 18, "name": "Business Admin", "prerequisite_id": null, "chain": "soft" },
+      { "id": 19, "name": "Human Rights", "prerequisite_id": null, "chain": "soft" },
+      { "id": 20, "name": "Networks", "prerequisite_id": 9, "chain": "networks" },
+      { "id": 21, "name": "Data Structure", "prerequisite_id": null, "chain": "prog" },
+      { "id": 22, "name": "Web Programming", "prerequisite_id": 16, "chain": "prog" },
+      { "id": 23, "name": "Systems Analysis", "prerequisite_id": 22, "chain": "systems" }
+    ]
+  },
+  "المستوى_الثالث": {
+    "الترم_الأول": [
+      { "id": 24, "name": "HCI", "prerequisite_id": null, "chain": "soft" },
+      { "id": 25, "name": "Multimedia", "prerequisite_id": null, "chain": "graphics" },
+      { "id": 26, "name": "Logic Programming", "prerequisite_id": 22, "chain": "prog" },
+      { "id": 27, "name": "Algorithms", "prerequisite_id": 21, "chain": "prog" },
+      { "id": 28, "name": "Databases", "prerequisite_id": 23, "chain": "systems" },
+      { "id": 29, "name": "Software Engineering", "prerequisite_id": 23, "chain": "systems" }
+    ],
+    "الترم_الثاني": [
+      { "id": 30, "name": "Neural Networks", "prerequisite_id": null, "chain": "ai" },
+      { "id": 31, "name": "AI", "prerequisite_id": null, "chain": "ai" },
+      { "id": 32, "name": "Mobile Apps", "prerequisite_id": 22, "chain": "prog" },
+      { "id": 33, "name": "Compiler Design", "prerequisite_id": 17, "chain": "hardware" },
+      { "id": 34, "name": "Operating Systems", "prerequisite_id": 33, "chain": "systems" },
+      { "id": 35, "name": "Graphics", "prerequisite_id": 34, "chain": "graphics" }
+    ]
+  },
+  "المستوى_الرابع": {
+    "الترم_الأول": [
+      { "id": 36, "name": "Parallel Processing", "prerequisite_id": 20, "chain": "networks" },
+      { "id": 37, "name": "Cloud Computing", "prerequisite_id": 36, "chain": "networks" },
+      { "id": 38, "name": "Senior Project 1", "prerequisite_id": 29, "chain": "systems" },
+      { "id": 39, "name": "Data Warehouse", "prerequisite_id": null, "chain": "systems" },
+      { "id": 40, "name": "Embedded Systems", "prerequisite_id": null, "chain": "hardware" },
+      { "id": 41, "name": "Image Processing", "prerequisite_id": 35, "chain": "graphics" }
+    ],
+    "الترم_الثاني": [
+      { "id": 42, "name": "Machine Learning", "prerequisite_id": 12, "chain": "ai" },
+      { "id": 43, "name": "IoT", "prerequisite_id": 37, "chain": "networks" },
+      { "id": 44, "name": "Senior Project 2", "prerequisite_id": 38, "chain": "systems" },
+      { "id": 45, "name": "Security", "prerequisite_id": null, "chain": "networks" },
+      { "id": 46, "name": "Distributed Systems", "prerequisite_id": 34, "chain": "systems" }
+    ]
+  }
+}
