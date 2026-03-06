@@ -10,17 +10,19 @@
 :root {
     --bg:        #000926;
     --bg2:       #001433;
-    --card:      rgba(0,20,51,0.85);
-    --txt:       #D6E6F3;
+    --card:      rgba(0,20,51,0.82);
+    --txt:       #e8f4fd;
     --txt2:      #A6C5D7;
     --accent:    #0F52BA;
-    --purple:    #50C878;
+    --accent2:   #50C878;
+    --gold:      #f5a623;
     --green:     #50C878;
     --orange:    #0B6E4F;
-    --gold:      #0F52BA;
-    --border:    rgba(15,82,186,0.25);
-    --shadow-b:  0 0 25px rgba(15,82,186,0.4);
-    --shadow-p:  0 0 25px rgba(80,200,120,0.3);
+    --purple:    #50C878;
+    --border:    rgba(15,82,186,0.3);
+    --shadow-b:  0 0 25px rgba(15,82,186,0.45);
+    --shadow-p:  0 0 25px rgba(80,200,120,0.35);
+    --grad:      linear-gradient(135deg, #0F52BA, #50C878);
     --header-h:  60px;
 }
 
@@ -30,15 +32,17 @@
     --bg2:      #e8f4fd;
     --card:     rgba(255,255,255,0.92);
     --txt:      #000926;
-    --txt2:     #001433;
+    --txt2:     #0a2a5e;
     --accent:   #0F52BA;
-    --purple:   #0B6E4F;
-    --green:    #50C878;
+    --accent2:  #0B6E4F;
+    --gold:     #c47a00;
+    --green:    #0B6E4F;
     --orange:   #083080;
-    --gold:     #0F52BA;
+    --purple:   #0B6E4F;
     --border:   rgba(15,82,186,0.35);
     --shadow-b: 0 4px 20px rgba(15,82,186,0.25);
-    --shadow-p: 0 4px 20px rgba(80,200,120,0.25);
+    --shadow-p: 0 4px 20px rgba(11,110,79,0.25);
+    --grad:     linear-gradient(135deg, #0F52BA, #0B6E4F);
 }
 
 /* ==================== RESET ==================== */
@@ -184,7 +188,7 @@ body {
 .header-glass {
     position: sticky; top: 0; z-index: 200;
     height: var(--header-h);
-    background: rgba(8,13,26,.96);
+    background: linear-gradient(135deg, rgba(0,9,38,0.97), rgba(0,20,51,0.97));
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(16px);
     transition: all .3s;
@@ -601,7 +605,7 @@ body {
     border: 1px solid transparent;
 }
 .mini-card.lec {
-    background: linear-gradient(135deg,rgba(15,82,186,0.14),rgba(15,82,186,0.05));
+    background: linear-gradient(135deg,rgba(15,82,186,0.18),rgba(80,200,120,0.08));
     border-color: rgba(15,82,186,0.4);
 }
 .mini-card.lec:hover {
@@ -610,7 +614,7 @@ body {
     box-shadow: 0 4px 14px rgba(15,82,186,0.25);
 }
 .mini-card.lab {
-    background: linear-gradient(135deg,rgba(80,200,120,0.14),rgba(80,200,120,0.05));
+    background: linear-gradient(135deg,rgba(80,200,120,0.18),rgba(15,82,186,0.08));
     border-color: rgba(80,200,120,0.4);
 }
 .mini-card.lab:hover {
@@ -1247,3 +1251,33 @@ body {
 }
 [data-theme="light"] .tdm-name { color: #1e293b; }
 [data-theme="light"] .tdm-meta-row { color: #4a5568; }
+
+/* ==================== NAME HIGHLIGHT ==================== */
+.name-highlight,
+.student-name-gold {
+    color: #f5a623 !important;
+    font-weight: 900 !important;
+    text-shadow: 0 0 10px rgba(245,166,35,0.7), 0 0 22px rgba(245,166,35,0.4) !important;
+    -webkit-text-fill-color: #f5a623 !important;
+}
+
+/* ==================== ACCENT GRADIENT UTILITIES ==================== */
+.grad-text {
+    background: linear-gradient(135deg, #0F52BA, #50C878);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* lec border color fix */
+.lec-card { border-color: rgba(15,82,186,0.5) !important; }
+.lab-card { border-color: rgba(80,200,120,0.5) !important; }
+
+.lec-card .card-subj { color: #4d9eff; }
+.lab-card .card-subj { color: #50C878; }
+
+.mini-card.lec .mini-s { color: #4d9eff; }
+.mini-card.lab .mini-s { color: #50C878; }
+
+[data-theme="light"] .lec-card .card-subj { color: #0F52BA; }
+[data-theme="light"] .lab-card .card-subj { color: #0B6E4F; }
