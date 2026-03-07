@@ -40,6 +40,9 @@
             <a href="https://learn.sha.edu.eg/" target="_blank" class="hlink hlink-green" title="E-Learning">
                 <i class="fas fa-laptop-code"></i><span>E-Learning</span>
             </a>
+            <a href="https://drive.google.com/drive/folders/1_PRdRmr1Z5ucvXhGs1UGHXHOtyq7BRHv" target="_blank" class="hlink hlink-drive" title="Drive">
+                <i class="fab fa-google-drive"></i><span>Drive</span>
+            </a>
             <a href="https://t.me/CS_SHA_4BOT" target="_blank" class="hlink hlink-blue" title="Telegram">
                 <i class="fab fa-telegram"></i><span>Telegram</span>
             </a>
@@ -60,8 +63,16 @@
         <ul class="notice-list">
             <li><i class="fas fa-check"></i> All data is unofficial – for reference only</li>
             <li><i class="fas fa-check"></i> Please verify with official sources</li>
-            <li><i class="fas fa-check"></i> Designed &amp; Developed by Mohamed Ali</li>
+            <li><i class="fas fa-check"></i> Designed &amp; Developed by
+                <a href="https://wa.me/201025114639" target="_blank" style="color:var(--accent);font-weight:800;">Mohamed Ali</a>
+            </li>
         </ul>
+        <div style="margin:12px 0 8px;padding:10px 12px;background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.2);border-radius:10px;text-align:left;">
+            <p style="font-size:.72rem;font-weight:800;color:var(--accent);margin-bottom:6px;"><i class="fas fa-hand-pointer"></i> How to use subject cards:</p>
+            <p style="font-size:.7rem;color:var(--txt2);margin-bottom:4px;"><i class="fas fa-mouse-pointer" style="color:var(--accent);width:14px;"></i> <strong>1 click</strong> — Open Drive folder</p>
+            <p style="font-size:.7rem;color:var(--txt2);margin-bottom:4px;"><i class="fas fa-mouse-pointer" style="color:#9370db;width:14px;"></i> <strong>3 clicks</strong> — Open video lectures</p>
+            <p style="font-size:.7rem;color:var(--txt2);"><i class="fab fa-whatsapp" style="color:#25d366;width:14px;"></i> <strong>Tap developer name</strong> — Contact admin</p>
+        </div>
         <div class="mt-4">
             <select id="sectionSelect" class="main-select" onchange="changeSection(this.value)">
                 <option value="">-- Select Section --</option>
@@ -102,7 +113,6 @@
             <button onclick="showStudyPlan()" class="btn btn-plan"><i class="fas fa-graduation-cap"></i><span>Study Plan</span></button>
             <button onclick="openEnglishSchedule()" id="englishBtn" class="btn btn-english hidden"><i class="fas fa-chalkboard-teacher"></i><span>English</span></button>
             <button onclick="openCurrentSectionStudents()" id="sectionStudentsBtn" class="btn btn-students hidden"><i class="fas fa-user-graduate"></i><span>Students</span></button>
-            <!-- Edit buttons — visible only for Section 17 -->
             <button onclick="enableEditing()" id="editBtn" class="btn btn-edit hidden"><i class="fas fa-edit"></i><span>Edit</span></button>
             <button onclick="saveEditing()" id="saveEditBtn" class="btn btn-save hidden"><i class="fas fa-check"></i><span>Save</span></button>
             <button onclick="cancelEditing()" id="cancelEditBtn" class="btn btn-cancel hidden"><i class="fas fa-times"></i><span>Cancel</span></button>
@@ -147,6 +157,26 @@
         </div>
     </div>
 
+    <!-- TASKS SECTION -->
+    <div id="tasksSection" class="tasks-section">
+        <div class="tasks-head">
+            <h3 class="tasks-title"><i class="fas fa-tasks"></i> Weekly Tasks</h3>
+            <button onclick="refreshTasks()" class="btn-refresh-tasks" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+        <div class="tasks-filter">
+            <button class="task-filter-btn active" onclick="filterTasks('all', this)">All</button>
+            <button class="task-filter-btn" onclick="filterTasks('Quiz', this)">Quiz</button>
+            <button class="task-filter-btn" onclick="filterTasks('Assignment', this)">Assignment</button>
+            <button class="task-filter-btn" onclick="filterTasks('Project', this)">Project</button>
+            <button class="task-filter-btn" onclick="filterTasks('Submission', this)">Submission</button>
+        </div>
+        <div id="tasksContainer" class="tasks-container">
+            <div class="tasks-loading"><i class="fas fa-spinner fa-spin"></i> Loading tasks...</div>
+        </div>
+    </div>
+
     <!-- Group View -->
     <div id="groupView" class="hidden table-card">
         <div class="tbl-header-row">
@@ -187,8 +217,9 @@
         <textarea
             id="freeNotesArea"
             class="notes-textarea"
-            placeholder="اكتب ملاحظاتك هنا...&#10;Write your notes here..."
+            placeholder="Write your notes here..."
             oninput="autoSaveNotes()"
+            dir="auto"
         ></textarea>
         <div class="notes-footer">
             <span id="notesCount" class="notes-count">0 chars</span>
@@ -293,8 +324,8 @@
         <div class="custom-edit-field">
             <label><i class="fas fa-graduation-cap"></i> Type</label>
             <select id="customType">
-                <option value="L">Lecture (محاضرة)</option>
-                <option value="S">Section (سكشن)</option>
+                <option value="L">Lecture</option>
+                <option value="S">Section</option>
             </select>
         </div>
         <div class="custom-edit-buttons">
@@ -305,7 +336,7 @@
     </div>
 </div>
 
-<!-- Study Plan Modal — built dynamically by JS -->
+<!-- Study Plan Modal -->
 <div id="studyPlanModal" class="hidden"></div>
 
 <!-- Load Scripts -->
@@ -326,6 +357,7 @@
         const n = localStorage.getItem('free-notes') || '';
         const ta = document.getElementById('freeNotesArea');
         if (ta) { ta.value = n; updateNotesCount(); }
+        loadTasksFromSheet();
     });
 </script>
 
