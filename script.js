@@ -213,7 +213,7 @@ function attachCardEvents(card, subjectName, key) {
     card.addEventListener('dblclick', (e) => {
         clearTimeout(holdTimer);
         if (holdFired) { holdFired = false; return; }
-        openVideoLinks(subjectName, key);
+        openVideoLinks(subjectName);
     });
 
     // ── Mobile: touchstart hold ──
@@ -239,7 +239,7 @@ function attachCardEvents(card, subjectName, key) {
         if (now - lastTap < 350) {
             e.preventDefault();
             if (navigator.vibrate) navigator.vibrate([30,30]);
-            openVideoLinks(subjectName, key);
+            openVideoLinks(subjectName);
         }
         lastTap = now;
     });
@@ -563,7 +563,7 @@ function closeStudentsNames() {
 }
 
 // ============================================
-// SUBJECT DRIVE LINKS + VIDEO SHEET NAMES
+// SUBJECT DRIVE LINKS
 // ============================================
 const subjectDriveLinks = {
     "business administration": "https://drive.google.com/drive/folders/1_GE-P572jVZLhJZqnU7t7ahl5GxVTU8I",
@@ -572,14 +572,6 @@ const subjectDriveLinks = {
     "computer network":        "https://drive.google.com/drive/folders/1EcZ47bZzeT0lER5etJe-2viYPueFYtb2",
     "system analysis":         "https://drive.google.com/drive/folders/11OcZ2n_v--nO3KehMMDu8onO15kxz-ZJ",
     "human rights":            "https://drive.google.com/drive/folders/1XlfEGfvmQigDkWkEgxO9ewxxBN9n3ElF"
-};
-const subjectSheetNames = {
-    "business administration": "business-administration",
-    "data structure":          "data-structure",
-    "web programming":         "web-programming",
-    "computer network":        "computer-network",
-    "system analysis":         "system-analysis",
-    "human rights":            "human-rights"
 };
 
 function cleanSubjectName(name) {
@@ -596,51 +588,97 @@ function openSubjectFiles(subjectName) {
 }
 
 // ============================================
-// VIDEO LINKS MODAL
+// VIDEO LINKS — single sheet, cols: Subject | Title | URL
 // ============================================
-const VIDEO_SHEET_BASE = `https://docs.google.com/spreadsheets/d/12W7uul0LS0dZmMf7E3DU2TJRrf2BN06o/gviz/tq?tqx=out:csv&sheet=`;
+const VIDEO_LINKS_URL = `https://docs.google.com/spreadsheets/d/1FJ603NgbRaWcGPtHOENSPuS_6DW30uhtU_WhNjftuzc/gviz/tq?tqx=out:csv`;
 
-async function openVideoLinks(subjectName, key) {
-    const sheetName = subjectSheetNames[key];
-    if (!sheetName) { showToast(`No video sheet for: ${subjectName}`,'error'); return; }
+let videoLinksCache = null; // cache fetched rows for session
+
+async function fetchAllVideoLinks() {
+    if (videoLinksCache) return videoLinksCache;
+    const res = await fetch(VIDEO_LINKS_URL + '&t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text  = await res.text();
+    const lines = text.trim().split('\n');
+    const rows  = [];
+    for (let i = 1; i < lines.length; i++) {   // i=1 skips header
+        const cols    = splitCSVLine(lines[i].trim());
+        const subject = stripQuotes(cols[0] || '');
+        const title   = stripQuotes(cols[1] || '');
+        const url     = stripQuotes(cols[2] || '');
+        if (!subject || !url) continue;
+        rows.push({ subject: normSubject(subject), title, url });
+    }
+    videoLinksCache = rows;
+    return rows;
+}
+
+// Normalize: lowercase, remove emoji/symbols, collapse spaces
+function normSubject(name) {
+    return name
+        .replace(/\p{Emoji}/gu, '')
+        .replace(/[\u{FE00}-\u{FE0F}]/gu, '')
+        .replace(/[^a-z0-9 ]/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+}
+
+async function openVideoLinks(subjectName) {
     if (!document.getElementById('videoLinksModal')) {
         const el = document.createElement('div');
         el.id = 'videoLinksModal';
         el.className = 'video-links-modal';
-        el.innerHTML = `<div class="vlm-overlay" onclick="closeVideoLinks()"></div><div class="vlm-box"><div class="vlm-header"><div class="vlm-title"><i class="fas fa-play-circle"></i> <span id="vlmSubjectName"></span></div><button class="vlm-close" onclick="closeVideoLinks()"><i class="fas fa-times"></i></button></div><div class="vlm-body" id="vlmBody"></div></div>`;
+        el.innerHTML = `
+            <div class="vlm-overlay" onclick="closeVideoLinks()"></div>
+            <div class="vlm-box">
+                <div class="vlm-header">
+                    <div class="vlm-title"><i class="fas fa-play-circle"></i> <span id="vlmSubjectName"></span></div>
+                    <button class="vlm-close" onclick="closeVideoLinks()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="vlm-body" id="vlmBody"></div>
+            </div>`;
         document.body.appendChild(el);
     }
-    const modal = document.getElementById('videoLinksModal');
     document.getElementById('vlmSubjectName').textContent = subjectName;
     document.getElementById('vlmBody').innerHTML = `<div class="vlm-loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>`;
-    modal.classList.add('active');
+    document.getElementById('videoLinksModal').classList.add('active');
     document.body.style.overflow = 'hidden';
+
     try {
-        const res  = await fetch(VIDEO_SHEET_BASE + encodeURIComponent(sheetName) + '&t=' + Date.now());
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const text = await res.text();
-        const rows = parseVideoCSV(text);
+        const allRows = await fetchAllVideoLinks();
+        const norm    = normSubject(subjectName);
+        const rows    = allRows.filter(r => r.subject === norm);
+
         if (!rows.length) {
-            document.getElementById('vlmBody').innerHTML = `<div class="vlm-empty"><i class="fas fa-video-slash"></i><p>No videos added yet.</p></div>`;
+            document.getElementById('vlmBody').innerHTML = `
+                <div class="vlm-empty"><i class="fas fa-video-slash"></i><p>No videos for this subject yet.</p></div>`;
             return;
         }
-        document.getElementById('vlmBody').innerHTML = rows.map((row, i) => `<a href="${escapeHtml(row.url)}" target="_blank" rel="noopener" class="vlm-card"><div class="vlm-num">${i+1}</div><div class="vlm-info"><div class="vlm-desc">${escapeHtml(row.desc||row.url)}</div><div class="vlm-url"><i class="fas fa-link"></i> ${escapeHtml(row.url)}</div></div><div class="vlm-arrow"><i class="fas fa-external-link-alt"></i></div></a>`).join('');
+
+        // Card style similar to task cards
+        document.getElementById('vlmBody').innerHTML = rows.map((row, i) => `
+            <a href="${escapeHtml(row.url)}" target="_blank" rel="noopener" class="vlm-card">
+                <div class="vlm-card-top">
+                    <span class="vlm-badge"><i class="fas fa-play"></i> Video</span>
+                    <span class="vlm-num">${i + 1}</span>
+                </div>
+                <div class="vlm-card-title">${escapeHtml(row.title || row.url)}</div>
+                <div class="vlm-card-url"><i class="fas fa-external-link-alt"></i> ${escapeHtml(row.url)}</div>
+            </a>`).join('');
+
     } catch(err) {
-        document.getElementById('vlmBody').innerHTML = `<div class="vlm-empty"><i class="fas fa-wifi"></i><p>Could not load videos</p><button onclick="openVideoLinks('${escapeHtml(subjectName)}','${key}')" class="vlm-retry"><i class="fas fa-redo"></i> Retry</button></div>`;
+        videoLinksCache = null;
+        document.getElementById('vlmBody').innerHTML = `
+            <div class="vlm-empty">
+                <i class="fas fa-wifi"></i><p>Could not load videos</p>
+                <button onclick="videoLinksCache=null;openVideoLinks('${escapeHtml(subjectName)}')" class="vlm-retry">
+                    <i class="fas fa-redo"></i> Retry
+                </button>
+            </div>`;
     }
 }
-function parseVideoCSV(csv) {
-    const lines = csv.trim().split('\n');
-    const rows  = [];
-    for (let i = 1; i < lines.length; i++) {
-        const cols = splitCSVLine(lines[i].trim());
-        const url  = stripQuotes(cols[0]||'');
-        const desc = stripQuotes(cols[1]||'');
-        if (!url) continue;
-        rows.push({ url, desc });
-    }
-    return rows;
-}
+
 function closeVideoLinks() {
     const modal = document.getElementById('videoLinksModal');
     if (modal) modal.classList.remove('active');
