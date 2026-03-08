@@ -788,9 +788,12 @@ function linkify(text) {
 function renderTasks() {
     const container = document.getElementById('tasksContainer');
     if (!container) return;
-    const list = currentFilter==='all' ? allTasks : allTasks.filter(t=>(t.type||'').toLowerCase()===currentFilter.toLowerCase());
+    // Keep real index from allTasks so openTaskModal always opens the right card
+    const list = allTasks
+        .map((task, realIdx) => ({ task, realIdx }))
+        .filter(({ task }) => currentFilter === 'all' || (task.type||'').toLowerCase() === currentFilter.toLowerCase());
     if (!list.length) { container.innerHTML=`<div class="tasks-empty"><i class="fas fa-check-circle"></i><p>No tasks found!</p></div>`; return; }
-    container.innerHTML = list.map((task, idx) => buildTaskCard(task, idx)).join('');
+    container.innerHTML = list.map(({ task, realIdx }) => buildTaskCard(task, realIdx)).join('');
 }
 function buildTaskCard(task, idx) {
     const date=parseDate(task.due), diff=date?daysFromToday(date):null;
